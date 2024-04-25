@@ -3,23 +3,32 @@
 namespace App\Policies;
 
 use App\Enums\ApprovalState;
-use App\Enums\MembershipState;
 use App\Enums\MemberType;
 use App\Helpers\Util;
 use App\Models\Member;
 use App\Models\User;
 use App\Models\Venture;
-use Filament\Facades\Filament;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 
 class VenturePolicy
 {
+  public static $name = "Venture";
+
+  public function before(Model $user, string $ability): bool|null
+  {
+    if ($user instanceof User && $user->isAdmin()) {
+      return true;
+    }
+
+    return null;
+  }
+
   /**
    * Determine whether the user can view any models.
    */
   public function viewAny(?Model $user): bool
   {
+    if ($user instanceof User && !$user->hasPermission(static::prefix("viewAny"))) return false;
     if (Util::isPanelActive('member') && $user->type !== MemberType::MEMBER) return false;
 
     return true;
@@ -28,8 +37,10 @@ class VenturePolicy
   /**
    * Determine whether the user can view the model.
    */
-  public function view(?Model $user, Venture $venture): bool
+  public function view(Model $user, Venture $venture): bool
   {
+    if ($user instanceof User && !$user->hasPermission(static::prefix("view"))) return false;
+
     return true;
   }
 
@@ -99,6 +110,7 @@ class VenturePolicy
   public function respondApprovalRequest(Model $user, Venture $venture): bool
   {
     if (!($user instanceof User) || Util::isPanelActive('guest')) return false;
+    if (!$user->hasPermission(static::prefix("approve"))) return false;
 
     if ($venture->approval_state !== ApprovalState::PENDING) return false;
 
@@ -108,6 +120,7 @@ class VenturePolicy
   public function reject(Model $user, Venture $venture): bool
   {
     if (!($user instanceof User) || Util::isPanelActive('guest')) return false;
+    if (!$user->hasPermission(static::prefix("reject"))) return false;
 
     if ($venture->approval_state !== ApprovalState::APPROVED) return false;
 
@@ -120,5 +133,10 @@ class VenturePolicy
     if ($venture->approval_state !== ApprovalState::APPROVED) return false;
 
     return true;
+  }
+
+  public static function prefix($name)
+  {
+    return ucfirst(static::$name) . ".{$name}";
   }
 }

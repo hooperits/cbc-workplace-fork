@@ -26,7 +26,7 @@ class ViewMember extends ViewRecord
       Actions\Action::make('membership-approval')
         ->label(__('actions/admin.membership-approval.label'))
         ->modalWidth('md')
-        ->visible(fn (Member $record) => $record->membership_state === MembershipState::PENDING)
+        ->authorize('approveMembershipRequest')
         ->action(function (Member $record, array $data) {
           Util::run(fn () => MembershipApproval::run($record, $data));
         })

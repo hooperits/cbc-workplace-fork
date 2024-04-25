@@ -8,8 +8,10 @@ use App\Models\User;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 
-class MemberPolicy
+class MemberPolicy extends BasePolicy
 {
+  public static $name = "Member";
+
   public function requestMembership(Model $user, Member $member): bool
   {
     if ($user instanceof User) return false;
@@ -20,8 +22,12 @@ class MemberPolicy
     return true;
   }
 
-  public function viewMembershipRequest(Model $user, Member $member): bool
+  public function approveMembershipRequest(Model $user, Member $member): bool
   {
     if (!($user instanceof User)) return false;
+    if (!$user->hasPermission(static::prefix("approve-membership"))) return false;;
+    if ($member->membership_state !== MembershipState::PENDING) return false;
+
+    return true;
   }
 }
