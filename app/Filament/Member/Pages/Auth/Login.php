@@ -15,23 +15,23 @@ use Illuminate\Support\Facades\Hash;
  */
 class Login extends AuthLogin
 {
-    public function form(Form $form): Form
-    {
-        return $form
-          ->schema([
-            TextInput::make('email')
-              ->label(__('login.fields.email.label'))
-              ->required()
-              ->autocomplete(),
-            TextInput::make('password')
-              ->label(__('filament-panels::pages/auth/login.form.password.label'))
-              ->password()
-              ->revealable()
-              ->required(),
-            //      Captcha::make('captcha')
-            //        ->autocomplete('off'),
-            Checkbox::make('remember')
-              ->label(__('filament-panels::pages/auth/login.form.remember.label')),
-          ])->statePath('data');
-    }
+  public function form(Form $form): Form
+  {
+    return $form
+      ->schema([
+        TextInput::make('email')
+          ->label(__('login.fields.email.label'))
+          ->required()
+          ->autocomplete()
+          ->extraInputAttributes(['tabindex' => 1]),
+        $this->getPasswordFormComponent()
+          ->label(__('filament-panels::pages/auth/login.form.password.label'))
+          ->revealable()
+          ->required(),
+        //      Captcha::make('captcha')
+        //        ->autocomplete('off'),
+        Checkbox::make('remember')
+          ->label(__('filament-panels::pages/auth/login.form.remember.label')),
+      ])->statePath('data');
+  }
 }
