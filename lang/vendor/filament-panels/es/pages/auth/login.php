@@ -4,13 +4,13 @@ return [
 
   'title' => 'Acceso',
 
-  'heading' => 'Entre a su cuenta',
+  'heading' => 'Acceder',
 
   'actions' => [
 
     'register' => [
       'before' => 'o',
-      'label' => 'Abrir una cuenta',
+      'label' => 'Registrese aquí',
     ],
 
     'request_password_reset' => [

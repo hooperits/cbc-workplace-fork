@@ -24,43 +24,43 @@ use Filament\Navigation\MenuItem;
 
 class MemberPanelProvider extends PanelProvider
 {
-  public function panel(Panel $panel): Panel
-  {
-    return $panel
-      ->id('member')
-      ->path('member')
-      ->authGuard('member')
-      ->login(Login::class)
-      ->registration(Register::class)
-      ->emailVerification()
-      ->profile(EditProfile::class)
-      ->colors([
-        'primary' => Color::Amber,
-        'gray' => Color::Gray,
-      ])
-      ->topNavigation()
-      ->discoverResources(in: app_path('Filament/Member/Resources'), for: 'App\\Filament\\Member\\Resources')
-      ->discoverPages(in: app_path('Filament/Member/Pages'), for: 'App\\Filament\\Member\\Pages')
-      ->pages([
-        Pages\Dashboard::class,
-      ])
-      ->discoverWidgets(in: app_path('Filament/Member/Widgets'), for: 'App\\Filament\\Member\\Widgets')
-      ->widgets([
-        Widgets\AccountWidget::class,
-        Widgets\FilamentInfoWidget::class,
-      ])
-      ->middleware([
-        EncryptCookies::class,
-        AddQueuedCookiesToResponse::class,
-        StartSession::class,
-        AuthenticateSession::class,
-        ShareErrorsFromSession::class,
-        VerifyCsrfToken::class,
-        SubstituteBindings::class,
-        DisableBladeIconComponents::class,
-        DispatchServingFilamentEvent::class,
-      ])
-      ->authMiddleware([Authenticate::class,])
-      ->userMenuItems([]);
-  }
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+          ->id('member')
+          ->path('member')
+          ->authGuard('member')
+          ->login(Login::class)
+          ->registration(Register::class)
+          ->emailVerification()
+          ->profile(EditProfile::class)
+          ->colors([
+            'primary' => Color::Amber,
+            'gray' => Color::Gray,
+          ])
+          ->topNavigation()
+          ->discoverResources(in: app_path('Filament/Member/Resources'), for: 'App\\Filament\\Member\\Resources')
+          ->discoverPages(in: app_path('Filament/Member/Pages'), for: 'App\\Filament\\Member\\Pages')
+          ->pages([
+            Pages\Dashboard::class,
+          ])
+          ->discoverWidgets(in: app_path('Filament/Member/Widgets'), for: 'App\\Filament\\Member\\Widgets')
+          ->widgets([
+            Widgets\AccountWidget::class,
+            Widgets\FilamentInfoWidget::class,
+          ])
+          ->middleware([
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+          ])
+          ->authMiddleware([Authenticate::class,])
+          ->userMenuItems([]);
+    }
 }

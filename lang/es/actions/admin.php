@@ -2,7 +2,7 @@
 
 return [
   'membership-approval' => [
-    'label' => 'Revisar Solicitud',
+    'label' => 'Aprobación',
 
     'form' => [
       'decision' => 'Decisión'
@@ -14,7 +14,7 @@ return [
   ],
 
   'respond-venture-approval-request' => [
-    'label' => 'Revisar Solicitud',
+    'label' => 'Aprobación',
 
     'form' => [
       'decision' => 'Decisión'

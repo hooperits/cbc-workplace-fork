@@ -17,61 +17,65 @@ use Illuminate\Support\Facades\Storage;
 
 class Member extends Authenticatable implements FilamentUser, MustVerifyEmail, HasAvatar
 {
-  use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
-  protected $guarded = [
-    'remember_token'
-  ];
+    protected $guarded = [
+      'remember_token'
+    ];
 
-  protected $hidden = [
-    'password',
-    'remember_token',
-  ];
+    protected $hidden = [
+      'password',
+      'remember_token',
+    ];
 
-  protected $casts = [
-    'type' => MemberType::class,
-    'membership_state' => MembershipState::class,
-    'membership_approval_at' => 'datetime',
-    'social_medias' => 'array',
-  ];
+    protected $casts = [
+      'type' => MemberType::class,
+      'membership_state' => MembershipState::class,
+      'membership_approval_at' => 'datetime',
+      'social_medias' => 'array',
+      'is_active' => 'boolean',
+    ];
 
-  public function canAccessPanel(Panel $panel): bool
-  {
-    return $panel->getId() === 'member';
-  }
+    public function canAccessPanel(Panel $panel): bool
+    {
+        $user = auth()->user();
+        return $panel->getId() === 'member';
+        return $panel->getId() === 'member' && $user->is_active;
+    }
 
-  public function getFilamentAvatarUrl(): ?string
-  {
-    return "https://ui-avatars.com/api/?name={$this->name}";
-    // return $this->avatar
-    //   ? Storage::disk('avatars')->url($this->avatar)
-    //   : "https://ui-avatars.com/api/?name={$this->name}";
-  }
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return "https://ui-avatars.com/api/?name={$this->name}";
+        // return $this->avatar
+        //   ? Storage::disk('avatars')->url($this->avatar)
+        //   : "https://ui-avatars.com/api/?name={$this->name}";
+    }
 
-  protected function password(): Attribute
-  {
-    return Attribute::make(
-      set: fn (string $value) => Hash::make($value)
-    );
-  }
+    protected function password(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => Hash::make($value)
+        );
+    }
 
-  public function canRequestMembership(): bool
-  {
-    return in_array(
-      $this->membership_state,
-      [MembershipState::UNDEFINED, MembershipState::REJECTED]
-    );
-  }
+    public function canRequestMembership(): bool
+    {
+        return in_array(
+            $this->membership_state,
+            [MembershipState::UNDEFINED, MembershipState::REJECTED]
+        );
+    }
 
-  public function canViewMembershipRequest(): bool
-  {
-    return $this->membership_state !== MembershipState::UNDEFINED;
-  }
+    public function canViewMembershipRequest(): bool
+    {
+        return $this->membership_state !== MembershipState::UNDEFINED;
+    }
 
-  public function isMembershipApprovalRespondeOld(): bool
-  {
-    $pending = $this->membership_state === MembershipState::PENDING;
+    public function isMembershipApprovalRespondeOld(): bool
+    {
+        $pending = $this->membership_state === MembershipState::PENDING;
 
-    return $this->membership_approval_reason && $pending;
-  }
+        return $this->membership_approval_reason && $pending;
+    }
 }

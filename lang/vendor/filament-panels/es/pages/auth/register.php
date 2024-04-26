@@ -2,9 +2,9 @@
 
 return [
 
-    'title' => 'Registrarse',
+    'title' => 'Registrar',
 
-    'heading' => 'Crear una cuenta',
+    'heading' => 'Registrar',
 
     'actions' => [
 
@@ -37,7 +37,7 @@ return [
         'actions' => [
 
             'register' => [
-                'label' => 'Registrarse',
+                'label' => 'Registrar',
             ],
 
         ],

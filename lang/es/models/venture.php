@@ -12,7 +12,8 @@ return [
     'approval_by' => 'Aprobado por',
     'approval_at' => 'Aprobado en',
     'approval_reason' => 'Razón de la decisión',
-    'expires_at' => 'Vigente Hasta',
+    'expires_at' => 'Modo Vigencia',
+    'is_active' => 'Activo',
   ],
 
   'resource' => [
@@ -21,6 +22,9 @@ return [
         'default' => 'Indefinido',
         'custom' => 'Una vez',
       ]
+    ],
+    'table' => [
+        'published_by' => 'Publicado por',
     ],
 
     'sections' => [

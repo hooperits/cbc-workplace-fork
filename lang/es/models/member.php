@@ -16,6 +16,7 @@ return [
     'membership_approval_at' => 'Revisado en',
     'membership_reason' => 'Razón de la Solicitud',
     'membership_approval_reason' => 'Detalles de la Decisión',
+    'is_active' => 'Activo',
   ],
 
   'type' => [
