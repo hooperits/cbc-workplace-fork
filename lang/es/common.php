@@ -3,11 +3,13 @@
 return [
   'fields' => [
     'id' => 'Id',
+    'reason' => 'Razón',
   ],
 
   'actions' => [
     'create' => ['label' => 'Crear', 'tooltip' => ''],
     'goto-list' => ['label' => 'Lista', 'tooltip' => ''],
+    'back' => ['label' => 'Volver', 'tooltip' => 'Volver'],
     'decision' => ['label' => 'Decisión', 'tooltip' => ''],
     'status-advance' => ['label' => 'Avanzar Estado', 'tooltip' => ''],
     'status-set' => ['label' => 'Fijar Estado', 'tooltip' => ''],
@@ -19,11 +21,11 @@ return [
   ],
 
   'enums' => [
-    'approval-state' => [
-      'undefined' => 'Por Solicitar',
-      'pending' => 'Pendiente',
+    'venture-approval-state' => [
+      'undefined' => 'Nuevo',
+      'pending' => 'Aprobación',
       'approved' => 'Aprobado',
       'rejected' => 'Rechazado',
-    ]
-  ]
+    ],
+  ],
 ];

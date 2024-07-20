@@ -13,7 +13,7 @@ return [
     ]
   ],
 
-  'respond-venture-approval-request' => [
+  'approve-venture-request' => [
     'label' => 'Aprobación',
 
     'form' => [

@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Enums\ApprovalState;
+use App\Enums\VentureApprovalState;
+use App\Models\Venture;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Venture;
 
 class VentureFactory extends Factory
 {
@@ -24,7 +24,7 @@ class VentureFactory extends Factory
     return [
       'title' => $this->faker->sentence(4),
       'content' => $this->faker->paragraphs(3, true),
-      'approval_state' => ApprovalState::UNDEFINED,
+      'approval_state' => VentureApprovalState::UNDEFINED,
     ];
   }
 }

@@ -5,12 +5,12 @@ return [
     'display' => [
       // 'date' => 'Y-m-d',
       'date' => 'd, M Y',
-      'dateTime' => 'Y-m-d H:i:s'
+      'dateTime' => 'Y-m-d H:i:s',
     ],
     'database' => [
       'date' => 'Y-m-d',
-      'dateTime' => 'Y-m-d H:i:s'
-    ]
+      'dateTime' => 'Y-m-d H:i:s',
+    ],
   ],
   'messages' => [
     'OPERATION-SUCCESS' => 'Operación Exitosa',
@@ -18,5 +18,6 @@ return [
     'OPERATION-NOTALLOWED' => 'Operación no permitida',
     'STATUSCHANGE-INVALID' => 'Estatus inválido',
     'STATUSCHANGE-NOTALLOWED' => 'Cambio de estatus no permitido',
+    'OPERATION-UNAUTHORIZED' => 'Operación no autorizada',
   ],
 ];

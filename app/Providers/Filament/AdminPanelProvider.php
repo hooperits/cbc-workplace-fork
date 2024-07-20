@@ -2,15 +2,20 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Navigation\MenuItem;
 use App\Filament\Admin\Pages\Auth\Login;
+use App\Filament\Admin\Resources\MemberResource;
+use App\Filament\Member\Resources\VentureResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -18,9 +23,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -33,7 +37,7 @@ class AdminPanelProvider extends PanelProvider
       ->login(Login::class)
       ->colors([
         'primary' => Color::Amber,
-        'gray' => Color::Gray
+        'gray' => Color::Gray,
       ])
       ->topNavigation()
       ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
@@ -62,10 +66,37 @@ class AdminPanelProvider extends PanelProvider
       ])
       ->renderHook(
         PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+        fn (): string => 'ADMIN'
+      )
+      ->renderHook(
+        PanelsRenderHook::GLOBAL_SEARCH_AFTER,
         fn (): string => Blade::render('filament.components.admin-menu', [
-          'items' => $this->getAdminMenuItems()
+          'items' => $this->getAdminMenuItems(),
         ])
-      );
+      )
+      ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+        return $builder->items([
+          NavigationItem::make(__('Inicio'))
+          ->icon('heroicon-o-home')
+          ->isActiveWhen(fn (): bool => request()->routeIs('filament.guest.pages..'))
+          ->url('/'),
+          NavigationItem::make('Dashboard')
+          ->icon('heroicon-o-squares-2x2')
+          ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
+          ->url(fn (): string => Pages\Dashboard::getUrl()),
+          ...MemberResource::getNavigationItems(),
+          ...VentureResource::getNavigationItems(),
+        ]);
+      });
+    //->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+      //  return $builder->items([
+      //    NavigationItem::make(__('Portal'))
+      //        ->icon('heroicon-o-home')
+      //        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
+      //        ->url(fn (): string => '/ventures', true),
+      //    ...VentureResource::getNavigationItems(),
+      //  ]);
+    //});
   }
 
   protected function getAdminMenuItems(): array

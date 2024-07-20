@@ -2,32 +2,126 @@
 
 namespace App\Filament\Guest\Resources;
 
-use App\Enums\ApprovalState;
+use App\Enums\VentureApprovalState;
 use App\Filament\Guest\Resources\VentureResource\Pages;
-use App\Filament\Shared\Resources\BaseVentureResource;
+use App\Helpers\Util;
+use App\Models\Venture;
+use Filament\Facades\Filament;
+use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class VentureResource extends BaseVentureResource
+class VentureResource extends Resource
 {
-    public static function getRelations(): array
-    {
-        return [
-          //
-        ];
-    }
+  protected static bool $shouldSkipAuthorization = true;
 
-    public static function getPages(): array
-    {
-        return [
-          'index' => Pages\ListVentures::route('/'),
-          'create' => Pages\CreateVenture::route('/create'),
-          'view' => Pages\ViewVenture::route('/{record}'),
-          'edit' => Pages\EditVenture::route('/{record}/edit'),
-        ];
-    }
+  protected static ?string $model = Venture::class;
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->active()->where('approval_state', ApprovalState::APPROVED);
-    }
+  public static ?string $navigationIcon = 'heroicon-o-light-bulb';
+
+  public static function getModelLabel(): string
+  {
+    return __('models/venture.label');
+  }
+
+  public static function getPluralModelLabel(): string
+  {
+    return __('models/venture.plural-label');
+  }
+
+  public static function infolist(Infolist $infolist): Infolist
+  {
+    return $infolist
+      ->schema([
+        Infolists\Components\Section::make()
+          ->schema([
+            Infolists\Components\TextEntry::make('expires_at')
+              ->label(false)
+              ->alignEnd()
+              ->dateTime(config('appx.dateTimeFormat.display.date')),
+            Infolists\Components\TextEntry::make('content')
+              ->label(false)
+              ->markdown()
+              ->columnSpanFull(),
+          ]),
+      ]);
+  }
+
+  public static function form(Form $form): Form
+  {
+    return $form;
+  }
+
+  public static function table(Table $table): Table
+  {
+    return $table
+      ->defaultSort('created_at', 'desc')
+      ->columns([
+        Tables\Columns\TextColumn::make('title')
+          ->label(__('models/venture.fields.title'))
+          ->grow(true)
+          ->searchable(),
+        Tables\Columns\TextColumn::make('approval_at')
+            ->label(__('models/venture.fields.approval_at'))
+            ->label(function () {
+              if (Util::isPanelActive('guest')) {
+                return __('models/venture.fields.published_at');
+              } else {
+                return __('models/venture.fields.approval_at');
+              }
+            })
+          ->getStateUsing(function (Venture $record) {
+            if (Util::isPanelActive('guest')) {
+              return $record->approval_at?->format('Y-m-d');
+            } else {
+              return $record->approval_at?->format('Y-m-d H:i:s');
+            }
+          }),
+        Tables\Columns\TextColumn::make('member.name')
+            ->label(function () {
+              $panel = Filament::getCurrentPanel()?->getId();
+              return match ($panel) {
+                'guest' => __('models/venture.resource.table.published_by'),
+                default => __('models/venture.fields.member_id')
+              };
+            })
+          ->searchable(),
+      ])
+      ->filters([])
+      ->actions([])
+      ->bulkActions([]);
+  }
+
+  public static function getRelations(): array
+  {
+    return [
+      //
+    ];
+  }
+
+  public static function getPages(): array
+  {
+    return [
+      'index' => Pages\ListVentures::route('/'),
+      'view' => Pages\ViewVenture::route('/{record}'),
+    ];
+  }
+
+  public static function getEloquentQuery(): Builder
+  {
+    return parent::getEloquentQuery()
+        ->active()
+        ->where('approval_state', VentureApprovalState::APPROVED)
+        ->where('is_active', 1)
+        ->where('is_expired', 0);
+  }
+
+  public static function shouldRegisterNavigation(): bool
+  {
+    return false;
+  }
 }

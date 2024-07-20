@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
       RoleSeeder::class,
       UserSeeder::class,
       ConfigSeeder::class,
-      MemberSeeder::class,
-      VentureSeeder::class,
+      //MemberSeeder::class,
+      //VentureSeeder::class,
     ]);
   }
 }

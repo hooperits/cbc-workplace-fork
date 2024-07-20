@@ -2,106 +2,126 @@
 
 namespace App\Filament\Shared\Resources\BaseVentureResource\Pages;
 
-use App\Actions\Admin\RespondVentureApprovalRequest;
+use App\Actions\Admin\VentureApproval;
 use App\Actions\Member\Duplicate;
 use App\Actions\Member\ExtendValidity;
 use App\Actions\Member\RequestVentureApproval;
-use App\Enums\ApprovalState;
+use App\Enums\VentureApprovalState;
 use App\Filament\Admin\Resources\VentureResource;
 use App\Helpers\Util;
 use App\Models\Config;
 use App\Models\Venture;
-use Filament\Forms;
 use Filament\Actions;
+use Filament\Facades\Filament;
+use Filament\Forms;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Carbon;
 
 class BaseViewVenture extends ViewRecord
 {
-    protected function getHeaderActions(): array
-    {
-        return [
-          Actions\Action::make('goto-list')
-            ->label(__('common.actions.goto-list.label'))
-            ->tooltip(__('common.actions.goto-list.tooltip'))
-            ->color('gray')
-            ->url(static::$resource::getUrl('index')),
-          //Actions\EditAction::make()
-          //  ->label(__('common.actions.edit.label'))
-          //  ->tooltip(__('common.actions.edit.tooltip')),
-          Actions\Action::make('request-approval')
-            ->label(__('actions/member.request-venture-approval.label'))
-            ->requiresConfirmation()
-            ->authorize('requestApproval', $this->getRecord())
-            ->visible(Util::isPanelActive('member'))
-            ->action(function (Venture $record) {
-                return Util::run(fn () => RequestVentureApproval::run($record));
-            }),
-          Actions\Action::make('respond-venture-approval-request')
-            ->label(__('actions/admin.respond-venture-approval-request.label'))
-            ->modalWidth('md')
-            ->authorize('respondApprovalRequest', $this->getRecord())
-            ->action(function (Venture $record, array $data) {
-                Util::run(fn () => RespondVentureApprovalRequest::run($record, $data));
-            })
-            ->form([
-              Forms\Components\Radio::make('decision')
-                ->label(__('actions/admin.membership-approval.form.decision'))
-                ->required()
-                ->inline()
-                ->inlineLabel(false)
-                ->options([
-                  ApprovalState::APPROVED->value => ApprovalState::APPROVED->getLabel(),
-                  ApprovalState::REJECTED->value => ApprovalState::REJECTED->getLabel(),
-                ]),
-              Forms\Components\Textarea::make('approval_reason')
-                ->label(__('models/venture.fields.approval_reason'))
-                ->requiredIf('decision', ApprovalState::REJECTED->value)
+  protected function getHeaderActions(): array
+  {
+    return [
+      Actions\Action::make('goto-list')
+        ->label(__('common.actions.back.label'))
+        ->tooltip(__('common.actions.back.tooltip'))
+        ->color('gray')
+        ->url(static::$resource::getUrl('index')),
+      Actions\EditAction::make()
+        ->label(__('common.actions.edit.label'))
+        ->tooltip(__('common.actions.edit.tooltip'))
+        ->visible(function (Venture $record) {
+          return Util::isPanelActive('member') &&
+          in_array($record->approval_state, [VentureApprovalState::UNDEFINED, VentureApprovalState::REJECTED]);
+        })
+        ->requiresAuthorization('Member.editVenture'),
+      Actions\Action::make('request-approval')
+        ->label(__('actions/member.request-venture-approval.label'))
+        ->requiresConfirmation()
+        ->visible(function (Venture $record) {
+          return Util::isPanelActive('member') &&
+          in_array($record->approval_state, [VentureApprovalState::UNDEFINED, VentureApprovalState::REJECTED]);
+        })
+        ->requiresAuthorization('Member.requestVentureApproval')
+        ->action(function (Venture $record) {
+          return Util::run(fn () => RequestVentureApproval::run($record));
+        }),
+      Actions\Action::make('approve-venture-request')
+        ->label(__('actions/admin.approve-venture-request.label'))
+        ->modalWidth('md')
+        //->authorize('respondApprovalRequest', $this->getRecord())
+        ->action(function (Venture $record, array $data) {
+          return Util::run(fn () => VentureApproval::run($record, $data));
+        })
+        ->visible(function (Venture $record) {
+          return Util::isPanelActive('admin') && $record->approval_state === VentureApprovalState::PENDING;
+        })
+        ->form([
+          Forms\Components\Radio::make('decision')
+            ->label(__('actions/admin.membership-approval.form.decision'))
+            ->required()
+            ->inline()
+            ->inlineLabel(false)
+            ->options([
+              VentureApprovalState::APPROVED->value => VentureApprovalState::APPROVED->getLabel(),
+              VentureApprovalState::REJECTED->value => VentureApprovalState::REJECTED->getLabel(),
             ]),
-          //Actions\Action::make('reject-venture-approval')
-          //  ->label(__('actions/admin.reject-venture-approval.label'))
-          //  ->modalWidth('md')
-          //  ->color('danger')
-          //  ->authorize('reject', $this->getRecord())
-          //  ->action(function (Venture $record, array $data) {
-          //      $data['decision'] = ApprovalState::REJECTED->value;
+          Forms\Components\Textarea::make('approval_reason')
+            ->label(__('models/venture.fields.approval_reason'))
+            ->requiredIf('decision', VentureApprovalState::REJECTED->value),
+        ]),
+      //Actions\Action::make('reject-venture-approval')
+      //  ->label(__('actions/admin.reject-venture-approval.label'))
+      //  ->modalWidth('md')
+      //  ->color('danger')
+      //  ->authorize('reject', $this->getRecord())
+      //  ->action(function (Venture $record, array $data) {
+      //      $data['decision'] = ApprovalState::REJECTED->value;
 
-          //      Util::run(fn () => RespondVentureApprovalRequest::run($record, $data));
-          //  })
-          //  ->form([
-          //    Forms\Components\Textarea::make('approval_reason')
-          //      ->label(__('models/venture.fields.approval_reason'))
-          //      ->required()
-          //  ]),
-          Actions\ActionGroup::make([
-            Actions\Action::make('extend-validity')
-              ->label(__('actions/member.extend-validity.label'))
-              ->authorize('extendValidity', $this->getRecord())
-              ->modalWidth('md')
-              ->form([
-                Forms\Components\DatePicker::make('date')
-                  ->label(__('models/venture.fields.expires_at'))
-                  ->required()
-                  ->helperText(function () {
-                      $maxDays = Config::make()->getp('ventures.validity.maxExtension');
+      //      Util::run(fn () => RespondVentureApprovalRequest::run($record, $data));
+      //  })
+      //  ->form([
+      //    Forms\Components\Textarea::make('approval_reason')
+      //      ->label(__('models/venture.fields.approval_reason'))
+      //      ->required()
+      //  ]),
+      Actions\ActionGroup::make([
+        Actions\Action::make('extend-validity')
+          ->label(__('actions/member.extend-validity.label'))
+          //->authorize('extendValidity', $this->getRecord())
+          ->modalWidth('md')
+          ->form([
+            Forms\Components\DatePicker::make('date')
+              ->label(__('models/venture.fields.expires_at'))
+              ->required()
+              ->helperText(function () {
+                $maxDays = Config::make()->getp('ventures.validity.maxExtension');
 
-                      return __('actions/member.extend-validity.form.helper-text', ['days' => $maxDays]);
-                  })
-                  ->maxDate(now()->addDays(Config::make()->getp('ventures.validity.maxExtension'))),
-              ])
-              ->action(function (Venture $record, array $data) {
-                  Util::run(fn () => ExtendValidity::run($record, Carbon::parse($data['date'])));
-              }),
-            Actions\Action::make('duplicate')
-              ->label(__('actions/member.duplicate.label'))
-              ->requiresConfirmation()
-              ->authorize('duplicate', $this->getRecord())
-              ->action(function (Venture $record) {
-                  $new =  Util::run(fn () => Duplicate::run($record));
+                return __('actions/member.extend-validity.form.helper-text', ['days' => $maxDays]);
+              })
+              ->maxDate(now()->addDays(Config::make()->getp('ventures.validity.maxExtension'))),
+          ])
+          ->visible(function (Venture $record) {
+            Util::isPanelActive('member') && $record->status === VentureApprovalState::APPROVED;
+          })
+          ->requiresAuthorization('Member.extendVentureValidity')
+          ->action(function (Venture $record, array $data) {
+            Util::run(fn () => ExtendValidity::run($record, Carbon::parse($data['date'])));
+          }),
+        Actions\Action::make('duplicate')
+          ->label(__('actions/member.duplicate.label'))
+          ->requiresConfirmation()
+          //->authorize('duplicate', $this->getRecord())
+          ->visible(function (Venture $record) {
+            return Util::isPanelActive('member');
+          })
+          ->requiresAuthorization('Member.dupVenture')
+          ->action(function (Venture $record) {
+            $new = Util::run(fn () => Duplicate::run($record));
 
-                  return redirect(VentureResource::getUrl('edit', ['record' => $new]));
-              }),
-      ])
-        ];
-    }
+            return redirect(VentureResource::getUrl('edit', ['record' => $new]));
+          }),
+      ]),
+    ];
+  }
 }

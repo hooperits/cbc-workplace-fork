@@ -1,8 +1,8 @@
 <?php
 
 return [
-  'label' => 'Miembro',
-  'plural-label' => 'Miembros',
+  'label' => 'Afiliado',
+  'plural-label' => 'Afiliados',
 
   'fields' => [
     'type' => 'Tipo',
@@ -17,11 +17,14 @@ return [
     'membership_reason' => 'Razón de la Solicitud',
     'membership_approval_reason' => 'Detalles de la Decisión',
     'is_active' => 'Activo',
+    'can_sponsor' => 'Patrocinador',
+    'sponsor' => 'Invitado por',
+    'created_at' => 'Fecha Registro',
   ],
 
   'type' => [
     'visitor' => 'Visitante',
-    'member' => 'Miembro',
+    'member' => 'Afiliado',
   ],
 
   'membership-state' => [
@@ -45,13 +48,13 @@ return [
       'tabs' => [
         'visitors' => 'Visitantes',
         'requests' => 'Solicitudes',
-        'members' => 'Miembros'
+        'members' => 'Afiliados'
       ]
     ],
 
     'sections' => [
       'membership' => [
-        'label' => 'Solicitud de Membresía',
+        'label' => 'Solicitud de Afilición',
         'description' => [
           'waiting' => 'En espera de respuesta',
           'returned' => 'Solicitud respondida',

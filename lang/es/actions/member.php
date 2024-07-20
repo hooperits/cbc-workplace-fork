@@ -2,8 +2,8 @@
 
 return [
   'request-membership' => [
-    'label' => 'Solicitar Membresia',
-    'description' => 'Ser un miembro le permitira publicar sus emprendimientos, buscar personal y buscar empleos',
+    'label' => 'Solicitar Afiliación',
+    'description' => 'Ser un afiliado le permitira publicar sus emprendimientos, buscar personal y buscar empleos',
     'exceptions' => [
       'unauthenticated-user' => 'No hay usuario autenticado'
     ]
@@ -22,5 +22,13 @@ return [
     'form' => [
       'helper-text' => 'Extensión válida hasta :days dias'
     ]
+  ],
+
+  'toggle-active' => [
+    'label' => 'Alternar Activo',
+  ],
+
+  'toggle-can-sponsor' => [
+    'label' => 'Alternar Patrocinador',
   ],
 ];

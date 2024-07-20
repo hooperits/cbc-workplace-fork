@@ -5,12 +5,13 @@ return [
   'plural-label' => 'Emprendimientos',
 
   'fields' => [
-    'member_id' => 'Miembro',
+    'member_id' => 'Afiliado',
     'title' => 'Título',
     'content' => 'Contentido',
     'approval_state' => 'Estado',
     'approval_by' => 'Aprobado por',
     'approval_at' => 'Aprobado en',
+    'published_at' => 'Publicado en',
     'approval_reason' => 'Razón de la decisión',
     'expires_at' => 'Modo Vigencia',
     'is_active' => 'Activo',
@@ -21,10 +22,10 @@ return [
       'expiration-type' => [
         'default' => 'Indefinido',
         'custom' => 'Una vez',
-      ]
+      ],
     ],
     'table' => [
-        'published_by' => 'Publicado por',
+      'published_by' => 'Publicado por',
     ],
 
     'sections' => [
@@ -38,7 +39,7 @@ return [
     ],
 
     'tabs' => [
-      'all' => 'Todas',
+      'all' => 'Todos',
       'undefined' => 'Elaboración',
       'pending' => 'En Aprobación',
       'approved' => 'Aprobadas',
@@ -48,8 +49,8 @@ return [
     'tooltips' => [
       'approval_reason' => [
         'old' => 'Respuesta de la solicitud anterior',
-        'new' => ''
-      ]
-    ]
-  ]
+        'new' => '',
+      ],
+    ],
+  ],
 ];

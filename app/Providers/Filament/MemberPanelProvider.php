@@ -2,13 +2,23 @@
 
 namespace App\Providers\Filament;
 
+use App\Enums\MembershipState;
+use App\Filament\Member\Pages\Auth\Login;
+use App\Filament\Member\Pages\Auth\Register;
+use App\Filament\Member\Pages\EditProfile;
+use App\Filament\Member\Resources\VentureResource;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -17,50 +27,69 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Member\Pages\Auth\Login;
-use App\Filament\Member\Pages\Auth\Register;
-use App\Filament\Member\Pages\EditProfile;
-use Filament\Navigation\MenuItem;
 
 class MemberPanelProvider extends PanelProvider
 {
-    public function panel(Panel $panel): Panel
-    {
-        return $panel
-          ->id('member')
-          ->path('member')
-          ->authGuard('member')
-          ->login(Login::class)
-          ->registration(Register::class)
-          ->emailVerification()
-          ->profile(EditProfile::class)
-          ->colors([
-            'primary' => Color::Amber,
-            'gray' => Color::Gray,
-          ])
-          ->topNavigation()
-          ->discoverResources(in: app_path('Filament/Member/Resources'), for: 'App\\Filament\\Member\\Resources')
-          ->discoverPages(in: app_path('Filament/Member/Pages'), for: 'App\\Filament\\Member\\Pages')
-          ->pages([
-            Pages\Dashboard::class,
-          ])
-          ->discoverWidgets(in: app_path('Filament/Member/Widgets'), for: 'App\\Filament\\Member\\Widgets')
-          ->widgets([
-            Widgets\AccountWidget::class,
-            Widgets\FilamentInfoWidget::class,
-          ])
-          ->middleware([
-            EncryptCookies::class,
-            AddQueuedCookiesToResponse::class,
-            StartSession::class,
-            AuthenticateSession::class,
-            ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
-            SubstituteBindings::class,
-            DisableBladeIconComponents::class,
-            DispatchServingFilamentEvent::class,
-          ])
-          ->authMiddleware([Authenticate::class,])
-          ->userMenuItems([]);
-    }
+  public function panel(Panel $panel): Panel
+  {
+    return $panel
+      ->id('member')
+      ->path('member')
+      ->authGuard('member')
+      ->default()
+      ->darkMode(false)
+      ->login(Login::class)
+      ->registration(Register::class)
+      ->emailVerification()
+      ->profile(EditProfile::class)
+      ->colors([
+        'primary' => Color::Amber,
+        'gray' => Color::Gray,
+      ])
+      ->topNavigation()
+      ->discoverResources(in: app_path('Filament/Member/Resources'), for: 'App\\Filament\\Member\\Resources')
+      ->discoverPages(in: app_path('Filament/Member/Pages'), for: 'App\\Filament\\Member\\Pages')
+      ->pages([
+        //Pages\Dashboard::class,
+        //VentureResource\Pages\ListVentures::class,
+      ])
+      ->discoverWidgets(in: app_path('Filament/Member/Widgets'), for: 'App\\Filament\\Member\\Widgets')
+      ->widgets([
+        Widgets\AccountWidget::class,
+        Widgets\FilamentInfoWidget::class,
+      ])
+      ->middleware([
+        EncryptCookies::class,
+        AddQueuedCookiesToResponse::class,
+        StartSession::class,
+        AuthenticateSession::class,
+        ShareErrorsFromSession::class,
+        VerifyCsrfToken::class,
+        SubstituteBindings::class,
+        DisableBladeIconComponents::class,
+        DispatchServingFilamentEvent::class,
+      ])
+      ->authMiddleware([Authenticate::class])
+      ->userMenuItems([])
+      ->renderHook(
+        PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+        function (): string {
+          return (auth()->user()->membership_state === MembershipState::APPROVED) ? 'Afiliado' : '';
+        }
+      )
+      ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+        return $builder->items([
+          NavigationItem::make(__('Inicio'))
+          ->icon('heroicon-o-home')
+          ->isActiveWhen(fn (): bool => request()->routeIs('filament.guest.pages..'))
+          ->url('/'),
+          NavigationItem::make('Dashboard')
+          ->icon('heroicon-o-squares-2x2')
+          ->isActiveWhen(fn (): bool => request()->routeIs('filament.member.pages.dashboard'))
+          //->visible(fn (): bool => Filament::auth()->user()->membership_state === MembershipState::APPROVED)
+          ->url(fn (): string => Pages\Dashboard::getUrl()),
+          ...VentureResource::getNavigationItems(),
+        ]);
+      });
+  }
 }

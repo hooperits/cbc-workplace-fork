@@ -2,8 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Enums\ApprovalState;
+use App\Enums\VentureApprovalState;
 use App\Filament\Admin\Resources\VentureResource\Pages;
+use App\Filament\Admin\Resources\VentureResource\RelationManagers\CommentsRelationManager;
 use App\Filament\Shared\Resources\BaseVentureResource;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -12,7 +13,7 @@ class VentureResource extends BaseVentureResource
   public static function getRelations(): array
   {
     return [
-      //
+      CommentsRelationManager::class,
     ];
   }
 
@@ -28,6 +29,6 @@ class VentureResource extends BaseVentureResource
 
   public static function getEloquentQuery(): Builder
   {
-    return parent::getEloquentQuery()->whereNot('approval_state', ApprovalState::UNDEFINED);
+    return parent::getEloquentQuery()->whereNot('approval_state', VentureApprovalState::UNDEFINED);
   }
 }

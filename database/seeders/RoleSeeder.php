@@ -23,7 +23,14 @@ class RoleSeeder extends Seeder
       'title' => 'Administradores',
       'is_active' => true,
       'is_admin' => true,
-      'perm' => null,
+      'perm' => [],
+    ]);
+    Role::create([
+      'name' => 'AFFILIATE',
+      'title' => 'Afiliados',
+      'is_active' => true,
+      'is_admin' => true,
+      'perm' => [],
     ]);
   }
 }

@@ -2,13 +2,17 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Guest\Resources\VentureResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -25,20 +29,23 @@ class GuestPanelProvider extends PanelProvider
     return $panel
       ->id('guest')
       ->path('')
+      ->darkMode(false)
       ->colors([
         'primary' => Color::Amber,
-        'gray' => Color::Gray
+        'gray' => Color::Gray,
       ])
       ->topNavigation()
       ->discoverResources(in: app_path('Filament/Guest/Resources'), for: 'App\\Filament\\Guest\\Resources')
       ->discoverPages(in: app_path('Filament/Guest/Pages'), for: 'App\\Filament\\Guest\\Pages')
       ->pages([
-        Pages\Dashboard::class,
+        VentureResource\Pages\ListVentures::class,
+        //Pages\Dashboard::class,
       ])
       ->discoverWidgets(in: app_path('Filament/Guest/Widgets'), for: 'App\\Filament\\Guest\\Widgets')
       ->widgets([
         Widgets\FilamentInfoWidget::class,
       ])
+      ->breadcrumbs(false)
       ->middleware([
         EncryptCookies::class,
         AddQueuedCookiesToResponse::class,
@@ -50,6 +57,15 @@ class GuestPanelProvider extends PanelProvider
         DisableBladeIconComponents::class,
         DispatchServingFilamentEvent::class,
       ])
-      ->authMiddleware([]);
+      ->authMiddleware([])
+      ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('filament.components.guest-menu'))
+      ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+        return $builder->items([
+          NavigationItem::make(__('Portal'))
+            ->icon('heroicon-o-home')
+            ->isActiveWhen(fn (): bool => request()->routeIs('filament.guest.pages..'))
+            ->url(fn (): string => '/', false),
+        ]);
+      });
   }
 }

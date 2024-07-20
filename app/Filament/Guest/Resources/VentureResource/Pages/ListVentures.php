@@ -3,9 +3,11 @@
 namespace App\Filament\Guest\Resources\VentureResource\Pages;
 
 use App\Filament\Guest\Resources\VentureResource;
-use App\Filament\Shared\Resources\BaseVentureResource\Pages\BaseListVentures;
+use Filament\Resources\Pages\ListRecords;
 
-class ListVentures extends BaseListVentures
+class ListVentures extends ListRecords
 {
+  protected static ?string $slug = '/';
+
   protected static string $resource = VentureResource::class;
 }

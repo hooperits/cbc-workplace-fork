@@ -8,25 +8,27 @@ use Illuminate\Database\Eloquent\Builder;
 
 class VentureResource extends BaseVentureResource
 {
-  public static function getRelations(): array
-  {
-    return [
-      //
-    ];
-  }
+    protected static bool $shouldSkipAuthorization = true;
 
-  public static function getPages(): array
-  {
-    return [
-      'index' => Pages\ListVentures::route('/'),
-      'create' => Pages\CreateVenture::route('/create'),
-      'view' => Pages\ViewVenture::route('/{record}'),
-      'edit' => Pages\EditVenture::route('/{record}/edit'),
-    ];
-  }
+    public static function getRelations(): array
+    {
+        return [
+          //
+        ];
+    }
 
-  public static function getEloquentQuery(): Builder
-  {
-    return parent::getEloquentQuery()->where('member_id', auth()->user()->id);
-  }
+    public static function getPages(): array
+    {
+        return [
+          'index' => Pages\ListVentures::route('/'),
+          'create' => Pages\CreateVenture::route('/create'),
+          'view' => Pages\ViewVenture::route('/{record}'),
+          'edit' => Pages\EditVenture::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('member_id', auth()->user()->id);
+    }
 }

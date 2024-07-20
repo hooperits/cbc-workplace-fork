@@ -2,10 +2,22 @@
 
 namespace App\Filament\Member\Resources\VentureResource\Pages;
 
+use App\Enums\MembershipState;
 use App\Filament\Member\Resources\VentureResource;
 use App\Filament\Shared\Resources\BaseVentureResource\Pages\BaseEditVenture;
+use App\Helpers\Util;
+use Filament\Facades\Filament;
 
 class EditVenture extends BaseEditVenture
 {
   protected static string $resource = VentureResource::class;
+
+  public function mount(int | string $record): void
+  {
+    parent::mount($record);
+    if (Filament::auth()->user()->membership_state !== MembershipState::APPROVED) {
+      Util::filamentNotification(__('Usted debe afiliarse para poder publicar su emprendimientos'), 'warning');
+      $this->redirect('/member/profile');
+    }
+  }
 }
