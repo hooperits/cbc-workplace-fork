@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Actions\Member\MarkVentureAsExpired;
 use App\Models\Venture;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class ExpireVentures extends Command
 {
@@ -27,6 +28,7 @@ class ExpireVentures extends Command
    */
   public function handle()
   {
+    Log::info("Running expire ventures command");
     $expiration = now();
     Venture::query()
       ->where('expires_at', '<', $expiration)

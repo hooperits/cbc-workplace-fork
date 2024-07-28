@@ -6,6 +6,7 @@ use App\Mail\Member\VentureExpired;
 use App\Models\Venture;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class DeleteExpiredVentures extends Command
@@ -29,6 +30,7 @@ class DeleteExpiredVentures extends Command
    */
   public function handle()
   {
+    Log::info("Running delete expired ventures command");
     $expiration = now()->subDays(5);
     DB::table('ventures')
       ->where('is_expired', 1)
