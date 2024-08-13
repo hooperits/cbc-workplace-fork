@@ -2,6 +2,7 @@
 
 namespace App\Filament\Member\Pages\Auth;
 
+use Filament\Actions\Action;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;

@@ -7,6 +7,7 @@ use App\Filament\Member\Pages\Auth\Login;
 use App\Filament\Member\Pages\Auth\Register;
 use App\Filament\Member\Pages\EditProfile;
 use App\Filament\Member\Resources\VentureResource;
+use App\Models\Config;
 use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -39,13 +40,14 @@ class MemberPanelProvider extends PanelProvider
       ->default()
       ->darkMode(false)
       ->login(Login::class)
-      ->registration(Register::class)
+      ->registration(Config::make()->getp('invitationCodeRequiredForRegistration', true) ? null : Register::class)
       ->emailVerification()
       ->profile(EditProfile::class)
       ->colors([
         'primary' => Color::Amber,
         'gray' => Color::Gray,
       ])
+      ->brandLogo(fn() => view('filament.logo'))
       ->topNavigation()
       ->discoverResources(in: app_path('Filament/Member/Resources'), for: 'App\\Filament\\Member\\Resources')
       ->discoverPages(in: app_path('Filament/Member/Pages'), for: 'App\\Filament\\Member\\Pages')

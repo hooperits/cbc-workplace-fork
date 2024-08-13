@@ -42,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
         'primary' => Color::Amber,
         'gray' => Color::Gray,
       ])
+      ->brandLogo(fn() => view('filament.logo'))
       ->topNavigation()
       ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
       ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')

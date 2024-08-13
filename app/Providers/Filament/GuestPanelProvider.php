@@ -34,6 +34,7 @@ class GuestPanelProvider extends PanelProvider
         'primary' => Color::Amber,
         'gray' => Color::Gray,
       ])
+      ->brandLogo(fn() => view('filament.logo'))
       ->topNavigation()
       ->discoverResources(in: app_path('Filament/Guest/Resources'), for: 'App\\Filament\\Guest\\Resources')
       ->discoverPages(in: app_path('Filament/Guest/Pages'), for: 'App\\Filament\\Guest\\Pages')
