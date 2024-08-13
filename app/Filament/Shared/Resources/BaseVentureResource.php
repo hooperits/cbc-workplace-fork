@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Guava\FilamentClusters\Forms\Cluster;
+use CodeWithDennis\FilamentSelectTree\SelectTree;
 
 class BaseVentureResource extends Resource
 {
@@ -116,6 +117,10 @@ class BaseVentureResource extends Resource
         Forms\Components\Section::make()
           ->columns(['md' => 2, 'lg' => 2])
           ->schema([
+            SelectTree::make('category')
+              ->label(__('Categoría'))
+              ->required()
+              ->relationship('categories', 'name', 'parent_id'),
             Forms\Components\TextInput::make('title')
               ->label(__('models/venture.fields.title'))
               ->required()
@@ -237,7 +242,7 @@ class BaseVentureResource extends Resource
       ])
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([
-          //Tables\Actions\DeleteBulkAction::make(),
+          Tables\Actions\DeleteBulkAction::make(),
         ]),
       ]);
   }

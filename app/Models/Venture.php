@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Venture extends Model
@@ -38,6 +39,11 @@ class Venture extends Model
   public function addComment(string $comment)
   {
     $this->comments()->create(['comment' => $comment, 'comment_by' => Filament::auth()->user()->name]);
+  }
+
+  public function categories(): BelongsToMany
+  {
+    return $this->belongsToMany(Category::class);
   }
 
   public function scopeOfMember(Builder $query, Member | int $member): void

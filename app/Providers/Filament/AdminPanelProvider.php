@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\Auth\Login;
+use App\Filament\Admin\Resources\CategoryResource;
 use App\Filament\Admin\Resources\MemberResource;
 use App\Filament\Admin\Pages\EditProfile;
 use App\Filament\Admin\Resources\TextResource;
@@ -88,6 +89,7 @@ class AdminPanelProvider extends PanelProvider
           ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
           ->url(fn (): string => Pages\Dashboard::getUrl()),
           ...TextResource::getNavigationItems(),
+          ...CategoryResource::getNavigationItems(),
           ...MemberResource::getNavigationItems(),
           ...VentureResource::getNavigationItems(),
         ]);
