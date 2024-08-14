@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Storage;
 
 class Venture extends Model
 {
@@ -25,6 +26,15 @@ class Venture extends Model
     'is_active' => 'boolean',
     'is_extendable' => 'boolean',
   ];
+
+  protected static function booted(): void
+  {
+    static::deleting(function (Venture $record) {
+      if ($file = $record->file) {
+        Storage::disk('public')->delete($file);
+      }
+    });
+  }
 
   public function member(): BelongsTo
   {

@@ -86,6 +86,11 @@ class BaseVentureResource extends Resource
                       ->label(false)
                       ->html()
                       ->columnSpanFull(),
+                    Infolists\Components\ImageEntry::make('file')
+                      ->label(false)
+                      ->height(300)
+                      ->width(800)
+                      ->columnSpanFull(),
                   ]),
               ]),
             Infolists\Components\Section::make(__('models/venture.resource.sections.approval.label'))
@@ -126,14 +131,12 @@ class BaseVentureResource extends Resource
               ->label(__('models/venture.fields.title'))
               ->required()
               ->maxLength(100),
-            Forms\Components\TextInput::make('url')
-              ->label(__('URL'))
-              ->maxLength(255),
             Cluster::make([])
               ->label(__('models/venture.fields.expires_at'))
               ->schema([
                 Forms\Components\Select::make('expiration_type')
                   ->dehydrated(false)
+                  ->required()
                   ->live()
                   ->options([
                     'default' => __('models/venture.resource.form.expiration-type.default'),
@@ -145,6 +148,15 @@ class BaseVentureResource extends Resource
                     default => false
                   }),
               ]),
+            Forms\Components\TextInput::make('url')
+              ->label(__('URL'))
+              ->maxLength(255),
+            Forms\Components\FileUpload::make('file')
+              ->label(__('Imagen'))
+              ->directory('ventures')
+              ->image()
+              ->maxSize(1024)
+              ->helperText(__('Max. tamaño de imagen 1Mb. Dimensiones recomendadas 300 x 300 o 800 x 300 pixeles')),
           ]),
         Forms\Components\Section::make(__('models/venture.fields.content'))
           ->schema([
@@ -247,7 +259,7 @@ class BaseVentureResource extends Resource
               return Util::run(fn() => ExtendValidity::run($record));
             }),
           Tables\Actions\ViewAction::make(),
-          //Tables\Actions\DeleteAction::make()
+          Tables\Actions\DeleteAction::make()
         ]),
       ])
       ->bulkActions([

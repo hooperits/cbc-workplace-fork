@@ -58,6 +58,13 @@ class VentureResource extends Resource
                 'class' => 'px-3',
               ])
               ->weight(FontWeight::Bold),
+            Infolists\Components\ImageEntry::make('file')
+              ->label(false)
+              ->height(300)
+              ->width(800)
+              ->alignCenter()
+              ->visible(fn(Venture $venture): bool => $venture->file)
+              ->columnSpanFull(),
             Infolists\Components\TextEntry::make('content')
               ->label(false)
               ->markdown()
