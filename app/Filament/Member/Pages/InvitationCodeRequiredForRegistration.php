@@ -31,4 +31,14 @@ class InvitationCodeRequiredForRegistration extends SimplePage
     return false;
   }
 
+  public function getText()
+  {
+    $record = Text::query()
+      ->latestText('registro')
+      ->first();
+    if (! $record) return "";
+
+    return $record->content;
+  }
+
 }
