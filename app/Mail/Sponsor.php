@@ -31,7 +31,7 @@ class Sponsor extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Invitación para Afiliarse',
+            subject: 'Invitación para registrarse',
         );
     }
 

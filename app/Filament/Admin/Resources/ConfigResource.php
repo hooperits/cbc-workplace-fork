@@ -15,9 +15,9 @@ class ConfigResource extends Resource
 {
   protected static ?string $model = Config::class;
 
-  protected static ?string $navigationIcon = 'heroicon-o-collection';
+  protected static ?string $navigationIcon = 'heroicon-o-chevron-right';
 
-  protected static bool $shouldRegisterNavigation = false;
+  protected static ?string $navigationGroup = "Sistema";
 
   protected static ?string $pluralModelLabel = 'Configuración';
 

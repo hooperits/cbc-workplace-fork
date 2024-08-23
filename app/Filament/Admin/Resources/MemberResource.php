@@ -31,7 +31,9 @@ class MemberResource extends Resource
 {
   protected static ?string $model = Member::class;
 
-  protected static ?string $navigationIcon = 'heroicon-o-user-group';
+  protected static ?string $navigationIcon = 'heroicon-o-chevron-right';
+
+  protected static ?string $navigationGroup = 'Emprendimientos';
 
   public static function getModelLabel(): string
   {

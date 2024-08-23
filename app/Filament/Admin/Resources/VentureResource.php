@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class VentureResource extends BaseVentureResource
 {
+
+  protected static ?string $navigationIcon = 'heroicon-o-chevron-right';
+
+  protected static ?string $navigationGroup = "Emprendimientos";
+
+
   public static function getRelations(): array
   {
     return [

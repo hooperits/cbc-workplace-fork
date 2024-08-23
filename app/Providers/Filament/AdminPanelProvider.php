@@ -3,31 +3,24 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\Auth\Login;
-use App\Filament\Admin\Resources\CategoryResource;
-use App\Filament\Admin\Resources\MemberResource;
 use App\Filament\Admin\Pages\EditProfile;
-use App\Filament\Admin\Resources\TextResource;
-use App\Filament\Member\Resources\VentureResource;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\MenuItem;
-use Filament\Navigation\NavigationBuilder;
-use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Navigation\NavigationGroup;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -50,9 +43,14 @@ class AdminPanelProvider extends PanelProvider
         Pages\Dashboard::class,
       ])
       ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
-      ->widgets([
-//        Widgets\AccountWidget::class,
-//        Widgets\FilamentInfoWidget::class,
+      ->widgets([])
+      ->navigationGroups([
+        NavigationGroup::make()
+          ->label('Sistema'),
+        NavigationGroup::make()
+          ->label('Administración'),
+        NavigationGroup::make()
+          ->label('Emprendimientos'),
       ])
       ->middleware([
         EncryptCookies::class,
@@ -70,43 +68,25 @@ class AdminPanelProvider extends PanelProvider
       ])
       ->renderHook(
         PanelsRenderHook::GLOBAL_SEARCH_AFTER,
-        fn (): string => 'ADMIN-PANEL'
+        fn (): string => 'ADMIN - ' . Filament::auth()->user()->role->name
       )
-      ->renderHook(
-        PanelsRenderHook::GLOBAL_SEARCH_AFTER,
-        fn (): string => Blade::render('filament.components.admin-menu', [
-          'items' => $this->getAdminMenuItems(),
-        ])
-      )
-      ->profile(EditProfile::class)
-      ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
-        return $builder->items([
-          NavigationItem::make(__('Inicio'))
-          ->icon('heroicon-o-home')
-          ->isActiveWhen(fn (): bool => request()->routeIs('filament.guest.pages..'))
-          ->url('/'),
-          NavigationItem::make('Dashboard')
-          ->icon('heroicon-o-squares-2x2')
-          ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
-          ->url(fn (): string => Pages\Dashboard::getUrl()),
-          ...TextResource::getNavigationItems(),
-          ...CategoryResource::getNavigationItems(),
-          ...MemberResource::getNavigationItems(),
-          ...VentureResource::getNavigationItems(),
-        ]);
-      });
+      ->profile(EditProfile::class);
+//      ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+//        return $builder->items([
+//          NavigationItem::make(__('Inicio'))
+//          ->icon('heroicon-o-home')
+//          ->isActiveWhen(fn (): bool => request()->routeIs('filament.guest.pages..'))
+//          ->url('/'),
+//          NavigationItem::make('Dashboard')
+//          ->icon('heroicon-o-squares-2x2')
+//          ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
+//          ->url(fn (): string => Pages\Dashboard::getUrl()),
+//          ...TextResource::getNavigationItems(),
+//          ...CategoryResource::getNavigationItems(),
+//          ...MemberResource::getNavigationItems(),
+//          ...VentureResource::getNavigationItems(),
+//        ]);
+//      });
   }
 
-  protected function getAdminMenuItems(): array
-  {
-    $array = collect(config('filament.adminMenu.items', []))
-      ->map(function ($item, $key) {
-        return MenuItem::make($key)
-          ->label($item['label'] ?? 'no label')
-          ->url($item['url'] ?? '')
-          ->icon($item['icon'] ?? '');
-      })
-      ->toArray();
-    return $array;
-  }
 }

@@ -24,8 +24,6 @@ class BaseVentureResource extends Resource
 {
   protected static ?string $model = Venture::class;
 
-  public static ?string $navigationIcon = 'heroicon-o-light-bulb';
-
   public static function getModelLabel(): string
   {
     return __('models/venture.label');
@@ -284,8 +282,4 @@ class BaseVentureResource extends Resource
     ];
   }
 
-  public static function shouldRegisterNavigation(): bool
-  {
-    return false;
-  }
 }

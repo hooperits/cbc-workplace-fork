@@ -76,7 +76,7 @@ class MemberPanelProvider extends PanelProvider
       ->renderHook(
         PanelsRenderHook::GLOBAL_SEARCH_AFTER,
         function (): string {
-          return (auth()->user()->membership_state === MembershipState::APPROVED) ? 'Afiliado' : '';
+          return (auth()->user()->membership_state === MembershipState::APPROVED) ? 'AFILIADO' : 'REGISTRADO';
         }
       )
       ->navigation(function (NavigationBuilder $builder): NavigationBuilder {

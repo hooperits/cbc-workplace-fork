@@ -24,11 +24,14 @@ class TextResource extends Resource
 {
   protected static ?string $model = Text::class;
 
-  protected static ?string $navigationIcon = 'heroicon-o-envelope';
+  protected static ?string $navigationIcon = 'heroicon-o-chevron-right';
 
   protected static ?int $navigationSort = 5;
 
-//  public static function getNavigationGroup(): ?string
+  protected static ?string $navigationGroup = "Administración";
+
+
+  //  public static function getNavigationGroup(): ?string
 //  {
 //    return __('Administración');
 //  }
