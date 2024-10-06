@@ -14,7 +14,20 @@ Usted se registró exitosamente.
 
   Una vez aprobado su solicitud, usted podrá publicar sus emprendimientos.
 
-  Gracias
+  # Dear {{ $user->name }}
+
+  # Welcome to {{ config('app.name') }}
+
+  You have registered successfully.
+
+  Your user profile is of type "Visitor". Under this profile, you will be able
+  to browse the site and keep your favorites.
+
+  To publish your entrepreneurship on the portal, you must become an Affiliate.
+  To become a member, access your profile click on "Solicitar Afiliación" and follow the steps.
+  Once your application is approved, you will be able to publish your entrepreneurship.
+
+  Gracias/Thankyou
 
   {{ config('app.name') }}
 </x-mail::message>

@@ -5,7 +5,13 @@
 
   {{ $venture->approval_reason }}
 
-  Gracias
+  # Entrepreneurship Application Approval
+
+  Your entrepreneurship was approved.
+
+  {{ $venture->approval_reason }}
+
+  Gracias/Thankyou
 
 
   {{ config('app.name') }}

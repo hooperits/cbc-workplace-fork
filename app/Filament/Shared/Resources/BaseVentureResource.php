@@ -169,6 +169,7 @@ class BaseVentureResource extends Resource
             Forms\Components\RichEditor::make('content')
               ->label(false)
               ->fileAttachmentsDisk('public')
+              ->required()
               ->disableToolbarButtons([
                 'attachFiles',
                 'blockquote',

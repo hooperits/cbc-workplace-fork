@@ -3,7 +3,11 @@
 
   Su perfil ha sido actualizado
 
-  Gracias
+  # Change in your profile.
+
+  Your profile has been updated.
+
+  Gracias/Thankyou
 
   {{ config('app.name') }}
 </x-mail::message>

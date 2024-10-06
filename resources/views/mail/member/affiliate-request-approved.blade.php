@@ -1,10 +1,14 @@
 <x-mail::message>
-# Solicitud de afiliación
+  # Solicitud de afiliación
 
-Su solicitud fue aprobada.
+  Su solicitud fue aprobada.
 
-{{ $member->membership_approval_reason }}
+  # Membership Application
 
-Bendiciones,<br>
-{{ config('app.name') }}
+  Your membership application has been approved.
+
+  {{ $member->membership_approval_reason }}
+
+  Bendiciones/Blessings,<br>
+  {{ config('app.name') }}
 </x-mail::message>

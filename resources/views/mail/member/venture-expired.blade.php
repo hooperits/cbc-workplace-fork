@@ -8,6 +8,16 @@
     el mismo será eliminado.
   @endif
 
+  # Entrepreneurship Expired
+
+  Your entrepreneurship entitled "{{ $venture->title }}" expired on {{ $venture->expires_at }}
+
+  @if($venture->is_extendable)
+    You have 5 days to extend your entrepreneurship. On the contrary you entrepreneurship
+    will be deleted.
+  @endif
+
+
   <x-mail::button :url="''">
     Acceder
   </x-mail::button>
