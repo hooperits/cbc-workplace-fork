@@ -17,6 +17,14 @@ class ViewVenture extends ViewRecord
   public function mount(int | string $record): void
   {
     parent::mount($record);
+    $isMobile = app()->make("BrowserAgent")->isMobile();
+
+    $this->record->load([
+      'media' => function ($query) use ($isMobile) {
+        $query->isActive()->where('is_mobile', $isMobile);
+      }
+    ]);
+
     $this->record->updateViewCount();
   }
 

@@ -11,7 +11,7 @@ class ViewVenture extends BaseViewVenture
 
   public function preview(): string
   {
-    $this->record->preview_until = now()->addSeconds(60);
+    $this->record->preview_until = now()->addSeconds(300);
     $this->record->save();
     $url = "/ventures/{$this->record->id}/preview?panel=admin";
     return $url;

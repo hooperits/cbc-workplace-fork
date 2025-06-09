@@ -23,18 +23,18 @@ class CreateVenture extends BaseCreateVenture
     }
   }
 
-//  protected function mutateFormDataBeforeCreate(array $data): array
-//  {
-//    $data['member_id'] = auth()->id();
-//    $data['is_active'] = false;
-//    $data['is_expired'] = false;
-//    if (! ($data['expires_at'] ?? null)) {
-//      $data['expires_at'] = now()->addDays(90);
-//      $data['is_extendable'] = true;
-//    }
-//
-//    return $data;
-//  }
+  //  protected function mutateFormDataBeforeCreate(array $data): array
+  //  {
+  //    $data['member_id'] = auth()->id();
+  //    $data['is_active'] = false;
+  //    $data['is_expired'] = false;
+  //    if (! ($data['expires_at'] ?? null)) {
+  //      $data['expires_at'] = now()->addDays(90);
+  //      $data['is_extendable'] = true;
+  //    }
+  //
+  //    return $data;
+  //  }
 
   protected function handleRecordCreation(array $data): Model
   {
@@ -49,7 +49,7 @@ class CreateVenture extends BaseCreateVenture
     }
     $venture = static::getModel()::create($data);
 
-    foreach($data as $id) {
+    foreach ($data as $id) {
       $category = Category::find($id);
       $venture->categories()->attach($category);
     }

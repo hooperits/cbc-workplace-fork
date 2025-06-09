@@ -2,12 +2,15 @@
 
 namespace App\Filament\Member\Pages\Auth;
 
+use App\Models\Config;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Auth\Login as AuthLogin;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use MarcoGermani87\FilamentCaptcha\Forms\Components\CaptchaField;
 
 /**
@@ -20,6 +23,23 @@ class Login extends AuthLogin
 
   public function mount(): void
   {
+    try {
+      $this->rateLimit(Config::make()->getp("rateLimiter.login"));
+    } catch (TooManyRequestsException $exception) {
+      Notification::make()
+        ->title(__('filament-panels::pages/auth/register.notifications.throttled.title', [
+          'seconds' => $exception->secondsUntilAvailable,
+          'minutes' => ceil($exception->secondsUntilAvailable / 60),
+        ]))
+        ->body(array_key_exists('body', __('filament-panels::pages/auth/register.notifications.throttled') ?: []) ? __('filament-panels::pages/auth/register.notifications.throttled.body', [
+          'seconds' => $exception->secondsUntilAvailable,
+          'minutes' => ceil($exception->secondsUntilAvailable / 60),
+        ]) : null)
+        ->danger()
+        ->send();
+      return;
+    }
+
     if (Filament::auth()->check()) {
       redirect(url(route('filament.member.pages.dashboard')));
     }

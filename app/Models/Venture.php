@@ -121,4 +121,9 @@ class Venture extends Model
     $this->favorite_count = $this->favorites->count();
     $this->save();
   }
+
+  public function media(): MorphMany
+  {
+    return $this->morphMany(Media::class, 'ownable');
+  }
 }

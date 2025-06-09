@@ -171,6 +171,7 @@ return [
     App\Providers\Filament\MemberPanelProvider::class,
     App\Providers\Filament\GuestPanelProvider::class,
     App\Providers\RouteServiceProvider::class,
+    Jenssegers\Agent\AgentServiceProvider::class,
   ])->toArray(),
 
   /*
@@ -186,6 +187,7 @@ return [
 
   'aliases' => Facade::defaultAliases()->merge([
     // 'Example' => App\Facades\Example::class,
+    'BrowserAgent' => Jenssegers\Agent\Facades\Agent::class,
   ])->toArray(),
 
 ];

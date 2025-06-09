@@ -7,7 +7,6 @@ use App\Filament\Member\Resources\VentureResource;
 use App\Filament\Shared\Resources\BaseVentureResource\Pages\BaseEditVenture;
 use App\Helpers\Util;
 use App\Models\Category;
-use App\Models\Venture;
 use Filament\Facades\Filament;
 use Filament\Actions;
 use Illuminate\Database\Eloquent\Model;
@@ -64,5 +63,10 @@ class EditVenture extends BaseEditVenture
     $this->record->save();
     $url = "/ventures/{$this->record->id}/preview";
     return $url;
+  }
+
+  public function getRelationManagers(): array
+  {
+    return [];
   }
 }

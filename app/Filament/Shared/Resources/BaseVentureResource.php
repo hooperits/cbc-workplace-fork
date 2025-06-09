@@ -189,12 +189,12 @@ class BaseVentureResource extends Resource
             Forms\Components\TextInput::make('url')
               ->label(__('URL'))
               ->maxLength(255),
-            Forms\Components\FileUpload::make('file')
-              ->label(__('Imagen'))
-              ->directory('ventures')
-              ->image()
-              ->maxSize(1024)
-              ->helperText(__('Max. tamaño de imagen 1Mb. Dimensiones recomendadas 300 x 300 o 800 x 300 pixeles')),
+            // Forms\Components\FileUpload::make('file')
+            //   ->label(__('Imagen'))
+            //   ->directory('ventures')
+            //   ->image()
+            //   ->maxSize(1024)
+            //   ->helperText(__('Max. tamaño de imagen 1Mb. Dimensiones recomendadas 300 x 300 o 800 x 300 pixeles')),
           ]),
         Forms\Components\Section::make(__('models/venture.fields.content'))
           ->schema([
@@ -211,7 +211,7 @@ class BaseVentureResource extends Resource
               ->columnSpanFull(),
             Placeholder::make('note')
               ->hiddenLabel()
-              ->visible(function (Venture $record = null) {
+              ->visible(function (?Venture $record = null) {
                 if (! $record) return false;
                 return in_array($record->approval_state, [VentureApprovalState::APPROVED]);
               })

@@ -29,15 +29,15 @@ class EditProfile extends AuthEditProfile
         ->label(__('actions/member.request-membership.label'))
         ->modalDescription(__('actions/member.request-membership.description'))
         ->modalWidth('xl')
-//        ->hasAuthorization('Member.requestAffiliation')
-//        ->requiresAuthorization('Member.requestAffiliation')
+        //        ->hasAuthorization('Member.requestAffiliation')
+        //        ->requiresAuthorization('Member.requestAffiliation')
         ->hidden(function () {
           return auth()->user()->membership_state === MembershipState::APPROVED;
         })
         ->action(function (array $data) {
           /** @var Member $user */
           $user = $this->getUser();
-          Util::run(fn () => RequestAffiliation::run($user, $data));
+          Util::run(fn() => RequestAffiliation::run($user, $data));
         })
         ->form([
           Forms\Components\Textarea::make('reason')
@@ -46,10 +46,9 @@ class EditProfile extends AuthEditProfile
             ->rows(5)
             ->maxLength(5000),
         ]),
-      Actions\ActionGroup::make([
-      ])
-      ->button()
-      ->label(__('Opciones')),
+      Actions\ActionGroup::make([])
+        ->button()
+        ->label(__('Opciones')),
     ];
   }
 
@@ -77,22 +76,24 @@ class EditProfile extends AuthEditProfile
               ->columns(2)
               ->columnSpan(['md' => 2])
               ->schema([
-                Forms\Components\TextInput::make('name')
-                  ->label(__('models/member.fields.name'))
-                  ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                   ->label(__('models/member.fields.email'))
+                  ->readOnly()
+                  ->disabled()
                   ->email()
+                  ->maxLength(255),
+                Forms\Components\TextInput::make('name')
+                  ->label(__('models/member.fields.name'))
                   ->maxLength(255),
                 TextInput::make('password')
                   ->label('Contraseña')
                   ->password()
                   ->revealable()
-                  ->rule(Password::default())
+                  ->rule(Password::min(8)->mixedCase()->numbers())
                   ->autocomplete('off')
-                  ->required(fn (string $operation): bool => $operation === 'create')
-                  ->dehydrated(fn ($state): bool => filled($state))
-                  ->dehydrateStateUsing(fn ($state): string => Hash::make($state))
+                  ->required(fn(string $operation): bool => $operation === 'create')
+                  ->dehydrated(fn($state): bool => filled($state))
+                  ->dehydrateStateUsing(fn($state): string => Hash::make($state))
                   ->same('passwordConfirmation'),
                 TextInput::make('passwordConfirmation')
                   ->label('Confirmar Contraseña')
@@ -104,7 +105,7 @@ class EditProfile extends AuthEditProfile
                   ->columnSpanFull()
                   ->simple(
                     Forms\Components\TextInput::make('name')
-                    ->maxLength(255)
+                      ->maxLength(255)
                   ),
               ]),
             Forms\Components\Section::make()
@@ -113,13 +114,13 @@ class EditProfile extends AuthEditProfile
               ->schema([
                 Forms\Components\Placeholder::make('type')
                   ->label(__('models/member.fields.type'))
-                  ->content(fn (Member $record) => $record->type->getLabel()),
+                  ->content(fn(Member $record) => $record->type->getLabel()),
                 Forms\Components\Placeholder::make('sponsor')
                   ->label(__('models/member.fields.sponsor'))
-                  ->content(fn (Member $record) => $record->invitation->sponsor->name),
+                  ->content(fn(Member $record) => $record->invitation?->sponsor->name),
                 Forms\Components\Placeholder::make('registered_at')
                   ->label(__('models/member.fields.created_at'))
-                  ->content(fn (Member $record) => $record->created_at->format('Y-m-d H:i:s')),
+                  ->content(fn(Member $record) => $record->created_at->format('Y-m-d H:i:s')),
               ]),
           ]),
         Forms\Components\Section::make(__('models/member.resource.sections.membership.label'))
@@ -131,15 +132,15 @@ class EditProfile extends AuthEditProfile
           ->columns(['md' => 2, 'lg' => 2])
           ->columnSpanFull()
           ->collapsible()
-          ->visible(fn (Member $record) => $record->canViewMembershipRequest())
-          ->collapsed(fn (Member $record) => $record->membership_state !== MembershipState::PENDING)
+          ->visible(fn(Member $record) => $record->canViewMembershipRequest())
+          ->collapsed(fn(Member $record) => $record->membership_state !== MembershipState::PENDING)
           ->schema([
             Forms\Components\Placeholder::make('membership_state')
               ->label(__('models/member.fields.membership_state'))
               ->columnSpanFull()
               ->content(function () {
                 $user = $this->getUser();
-                return $user->membership_state->getLabel().'@'.$user->membership_approval_at?->format('Y-m-d H:i:s');
+                return $user->membership_state->getLabel() . '@' . $user->membership_approval_at?->format('Y-m-d H:i:s');
               }),
             Forms\Components\Placeholder::make('membership_reason')
               ->label(__('models/member.fields.membership_reason'))

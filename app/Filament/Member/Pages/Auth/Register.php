@@ -24,27 +24,39 @@ use Illuminate\Validation\Rules\Password;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
+use MarcoGermani87\FilamentCaptcha\Forms\Components\CaptchaField;
 
 class Register extends AuthRegister
 {
 
+  //   protected $rules = [
+  //     'password' => [
+  //         'required',
+  //         'string',
+  //         Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised(),
+  //         'confirmed'
+  //     ],
+  // ];
+
   public function mount(): void
   {
     parent::mount();
-    $code = request()->input('i', null);
-    if (! $code && Config::make()->getp('invitationCodeRequiredForRegistration', true)) {
-      redirect(route('member-register-with-invitation-code'));
+    if (Config::make()->getp('invitationCodeRequiredForRegistration', false)) {
+      $code = request()->input('i', null);
+      if (! $code && Config::make()->getp('invitationCodeRequiredForRegistration', true)) {
+        redirect(route('member-register-with-invitation-code'));
+      }
     }
     FilamentView::registerRenderHook(
       PanelsRenderHook::AUTH_REGISTER_FORM_AFTER,
-      fn (): View => view('filament.member.register-page-footer-links'),
+      fn(): View => view('filament.member.register-page-footer-links'),
     );
   }
 
   public function register(): ?MemberRegistrationResponse
   {
     try {
-      $this->rateLimit(2);
+      $this->rateLimit(Config::make()->getp("rateLimiter.register"));
     } catch (TooManyRequestsException $exception) {
       Notification::make()
         ->title(__('filament-panels::pages/auth/register.notifications.throttled.title', [
@@ -62,8 +74,13 @@ class Register extends AuthRegister
     }
 
     $data = $this->form->getState();
-    if (!$invitation = $this->validateInvitationCode($data['uuid'] ?? null)) {
-      return null;
+    $invitationCodeRequiredForRegistration = Config::make()->getp('invitationCodeRequiredForRegistration', false);
+
+
+    if ($invitationCodeRequiredForRegistration) {
+      if (!$invitation = $this->validateInvitationCode($data['uuid'] ?? null)) {
+        return null;
+      }
     }
 
     $user = $this->handleRegistration($data);
@@ -77,10 +94,14 @@ class Register extends AuthRegister
 
     $latestTos = Text::latestText('terminos-y-condiciones')->first();
 
-    $user->invitation_id = $invitation->id;
+    $user->invitation_id = $invitation->id ?? null;
     $user->tos = $latestTos?->id;
-    $invitation->is_redeemed = true;
-    $invitation->save();
+
+    if ($invitationCodeRequiredForRegistration) {
+      $invitation->is_redeemed = true;
+      $invitation->save();
+    }
+
     $user->save();
 
     /** @var Authenticatable $user */
@@ -105,6 +126,7 @@ class Register extends AuthRegister
             Forms\Components\Checkbox::make('tos')
               ->label(__('Acepto los terminos y condiciones'))
               ->accepted(),
+            CaptchaField::make('captcha'),
             Hidden::make('uuid')
               ->default(request()->i),
           ])
@@ -120,9 +142,9 @@ class Register extends AuthRegister
       ->password()
       ->revealable()
       ->required()
-      ->rule(Password::default())
+      ->rule(Password::min(8)->mixedCase()->numbers())
       ->same('passwordConfirmation')
-      ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+      ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
       ->validationAttribute(__('filament-panels::pages/auth/register.form.password.validation_attribute'));
   }
 
@@ -150,9 +172,9 @@ class Register extends AuthRegister
       Util::filamentNotification('Invitación vencida', 'danger');
       return null;
     }
-//    if (!$invitation->sponsor->can_sponsor) {
-//      Util::filamentNotification('Invitación invalida', 'danger');
-//    }
+    //    if (!$invitation->sponsor->can_sponsor) {
+    //      Util::filamentNotification('Invitación invalida', 'danger');
+    //    }
     return $invitation;
   }
 

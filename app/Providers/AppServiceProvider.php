@@ -9,6 +9,8 @@ use App\Http\Responses\LoginResponse;
 use Illuminate\Support\ServiceProvider;
 use Filament\Forms;
 use App\Helpers\AppMacros;
+use Illuminate\Contracts\Foundation\Application;
+use Jenssegers\Agent\Agent;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
   {
     $this->app->bind(LoginResponseContract::class, LoginResponse::class);
     $this->app->bind(EmailVerificationResponseContract::class, EmailVerificationResponse::class);
+    $this->app->singleton('BrowserAgent', function (Application $app) {
+      return new Agent();
+    });
   }
 
   /**

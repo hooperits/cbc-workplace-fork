@@ -49,5 +49,10 @@ return [
   ['id' => 'Member.dupVenture', 'parent' => 'Member', 'text' => 'Duplicar Emprendimiento'],
   ['id' => 'Member.requestVentureApproval', 'parent' => 'Member', 'text' => 'Solicitar Aprobación de Emprendimiento'],
   ['id' => 'Member.extendVentureValidity', 'parent' => 'Member', 'text' => 'Extender Emprendimiento'],
+  // ['id' => 'Member.Media.viewAny', 'parent' => 'Member', 'text' => 'Medios Listar'],
+  // ['id' => 'Member.Media.create', 'parent' => 'Member', 'text' => 'Medio Crear'],
+  // ['id' => 'Member.Media.edit', 'parent' => 'Member', 'text' => 'Medio Editar'],
+  // ['id' => 'Member.Media.view', 'parent' => 'Member', 'text' => 'Medio Ver'],
+  // ['id' => 'Member.Media.delete', 'parent' => 'Member', 'text' => 'Medio Eliminar'],
 
 ];

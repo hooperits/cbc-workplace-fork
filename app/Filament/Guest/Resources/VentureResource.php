@@ -4,6 +4,7 @@ namespace App\Filament\Guest\Resources;
 
 use App\Enums\VentureApprovalState;
 use App\Filament\Guest\Resources\VentureResource\Pages;
+use App\Filament\Guest\Resources\VentureResource\Pages\PreviewVenture;
 use App\Helpers\Util;
 use App\Models\Category;
 use App\Models\Venture;
@@ -20,10 +21,7 @@ use Filament\Tables\Filters\Filter;
 use CodeWithDennis\FilamentSelectTree\SelectTree;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 class VentureResource extends Resource
 {
@@ -75,35 +73,22 @@ class VentureResource extends Resource
                 'class' => 'border-solid border-2 border-sky-500 p-3',
               ])
               ->columnSpanFull(),
-            Infolists\Components\ImageEntry::make('file')
-              ->label(false)
-              ->alignCenter()
-              ->visible(fn(Venture $venture): bool => (bool)$venture->file)
-              ->height(function (Venture $record) {
-                $image = Storage::disk('public')->path($record->file);
-                list($width, $height) = getimagesize($image);
-                return $height;
-              })
-              ->width(function (Venture $record) {
-                $image = Storage::disk('public')->path($record->file);
-                list($width, $height) = getimagesize($image);
-                return $width;
-              })
-              ->columnSpanFull()
-              ->url(function (Venture $venture) {
-                return $venture->url;
-              })
-              ->openUrlInNewTab(),
-            Infolists\Components\TextEntry::make('approval_at')
-              ->label(false)
-              ->alignStart()
-              ->formatStateUsing(function (Venture $record) {
-                $date = "";
-                if ($record->approval_at) {
-                  $date = date_format($record->approval_at, config('appx.dateTimeFormat.display.date'));
-                }
-                return __("Fecha Publicación") . ": " . $date;
-              }),
+
+            Infolists\Components\RepeatableEntry::make('media')
+              ->hiddenLabel()
+              ->schema([
+                Infolists\Components\ImageEntry::make('file')
+                  ->hiddenLabel()
+                  ->disk('public')
+                  ->alignCenter()
+                  ->width(fn() => request()->input('mobile') ? 280 : 640)
+                  ->height(fn() => request()->input('mobile') ? 280 : 480),
+                Infolists\Components\TextEntry::make('caption')
+                  ->hiddenLabel()
+                  ->size(Infolists\Components\TextEntry\TextEntrySize::Medium)
+                  ->alignCenter(),
+              ]),
+
             Infolists\Components\TextEntry::make('expires_at')
               ->label(false)
               ->alignStart()
@@ -112,7 +97,7 @@ class VentureResource extends Resource
                 if ($record->expires_at) {
                   $date = date_format($record->expires_at, config('appx.dateTimeFormat.display.date'));
                 }
-                return __("Fecha Vence") . ": " . $date;
+                return __("Anuncio Vence") . ": " . $date;
               }),
 
           ]),
