@@ -3,9 +3,11 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Venture\Resources\VentureResource;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -23,8 +25,9 @@ class VenturePanelProvider extends PanelProvider
   public function panel(Panel $panel): Panel
   {
     return $panel
-      ->id('venture')
+      ->id('app')
       ->path('/app')
+      ->default()
       ->darkMode(false)
       ->colors([
         'primary' => Color::Amber,
@@ -64,11 +67,11 @@ class VenturePanelProvider extends PanelProvider
       //      ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('filament.components.venture-menu'))
       ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
         return $builder->items([
-          // NavigationItem::make(__('Acceder'))
-          //   ->icon('heroicon-o-user')
-          //   ->url(function () {
-          //     return url(route('filament.member.auth.login'));
-          //   }),
+          NavigationItem::make(__('Inicio'))
+            ->icon('heroicon-o-home')
+            ->url(function () {
+              return url('/');
+            }),
           // NavigationItem::make(__('Registrar'))
           //   ->icon('heroicon-o-user-plus')
           //   ->url(function () {

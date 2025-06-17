@@ -53,7 +53,6 @@ class MemberPanelProvider extends PanelProvider
       ->id('member')
       ->path('member')
       ->authGuard('member')
-      ->default()
       ->darkMode(false)
       ->login(Login::class)
       ->registration(Register::class)
@@ -97,26 +96,32 @@ class MemberPanelProvider extends PanelProvider
       ->renderHook(
         PanelsRenderHook::GLOBAL_SEARCH_AFTER,
         function (): string {
-          return (auth()->user()->membership_state === MembershipState::APPROVED) ? 'AFILIADO' : 'REGISTRADO';
+          return (auth()->guard('member')->user()->membership_state === MembershipState::APPROVED) ? 'AFILIADO' : 'REGISTRADO';
         }
       )
       ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
-        return $builder->items([
+        $items = [
           NavigationItem::make(__('Inicio'))
             ->icon('heroicon-o-home')
-            ->url('/venture')
+            ->url('/')
             ->openUrlInNewTab(),
-          NavigationItem::make('Dashboard')
-            ->icon('heroicon-o-squares-2x2')
-            ->isActiveWhen(fn(): bool => request()->routeIs('filament.member.pages.dashboard'))
-            //->visible(fn (): bool => Filament::auth()->user()->membership_state === MembershipState::APPROVED)
-            ->url(fn(): string => Pages\Dashboard::getUrl()),
-          NavigationItem::make(__('Favoritos'))
-            ->icon('heroicon-o-heart')
-            ->isActiveWhen(fn(): bool => request()->routeIs('filament.member.resources.favorites.index'))
-            ->url(url(route('filament.member.resources.favorites.index'))),
-          ...VentureResource::getNavigationItems(),
-        ]);
+        ];
+        if (auth()->guard('member')->user()) {
+          array_push($items,  ...[
+            NavigationItem::make('Dashboard')
+              ->icon('heroicon-o-squares-2x2')
+              ->isActiveWhen(fn(): bool => request()->routeIs('filament.member.pages.dashboard'))
+              //->visible(fn (): bool => Filament::auth()->user()->membership_state === MembershipState::APPROVED)
+              ->url(fn(): string => Pages\Dashboard::getUrl()),
+            NavigationItem::make(__('Favoritos'))
+              ->icon('heroicon-o-heart')
+              ->isActiveWhen(fn(): bool => request()->routeIs('filament.member.resources.favorites.index'))
+              ->url(url(route('filament.member.resources.favorites.index'))),
+            ...VentureResource::getNavigationItems(),
+          ]);
+        }
+        $items = $builder->items($items);
+        return $items;
       });
   }
 }

@@ -32,9 +32,9 @@ class TextResource extends Resource
 
 
   //  public static function getNavigationGroup(): ?string
-//  {
-//    return __('Administración');
-//  }
+  //  {
+  //    return __('Administración');
+  //  }
 
   public static function getModelLabel(): string
   {
@@ -119,14 +119,31 @@ class TextResource extends Resource
           ->label(false)
           ->tooltip(__('common.actions.edit.tooltip')),
         Tables\Actions\ActionGroup::make([
+          Tables\Actions\Action::make('edit-code')
+            ->label(__("Editar HTML"))
+            ->icon('heroicon-o-chevron-right')
+            ->fillForm(function (Text $record) {
+              return [
+                'html' => $record->content,
+              ];
+            })
+            ->form([
+              Forms\Components\Textarea::make('html')
+                ->label(__('HTML'))
+                ->rows(10),
+            ])
+            ->action(function (Text $record, array $data) {
+              $record->content = $data['html'];
+              $record->save();
+              Util::filamentNotification("!OPERATION-SUCCESS");
+            }),
           Tables\Actions\ViewAction::make()
             ->label(__('common.actions.view.label'))
             ->tooltip(__('common.actions.view.tooltip')),
         ])
       ])
       ->bulkActions([
-        Tables\Actions\BulkActionGroup::make([
-        ]),
+        Tables\Actions\BulkActionGroup::make([]),
       ]);
   }
 
@@ -146,5 +163,4 @@ class TextResource extends Resource
       'edit' => Pages\EditText::route('/{record}/edit'),
     ];
   }
-
 }

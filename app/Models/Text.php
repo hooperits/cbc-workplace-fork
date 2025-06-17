@@ -42,4 +42,14 @@ class Text extends Model
       ->logUnguarded()
       ->logOnlyDirty();
   }
+
+  public static function getText(string $code)
+  {
+    $record = Text::query()
+      ->latestText($code)
+      ->first();
+    if (! $record) return [];
+
+    return [$record->title, $record->content];
+  }
 }

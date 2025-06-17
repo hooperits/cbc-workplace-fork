@@ -10,4 +10,9 @@ class ListVentures extends ListRecords
   protected static ?string $slug = '/';
 
   protected static string $resource = VentureResource::class;
+
+  public function mount(): void
+  {
+    parent::mount();
+  }
 }
