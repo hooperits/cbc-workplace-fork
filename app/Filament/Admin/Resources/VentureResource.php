@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\VentureResource\Pages;
 use App\Filament\Admin\Resources\VentureResource\RelationManagers\CommentsRelationManager;
+use App\Filament\Admin\Resources\VentureResource\RelationManagers\MediaRelationManager;
 use App\Filament\Shared\Resources\BaseVentureResource;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -18,6 +19,7 @@ class VentureResource extends BaseVentureResource
   public static function getRelations(): array
   {
     return [
+      MediaRelationManager::class,
       CommentsRelationManager::class,
     ];
   }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Member\Resources\VentureResource\RelationManagers;
+namespace App\Filament\Admin\Resources\VentureResource\RelationManagers;
 
 use App\Enums\VentureApprovalState;
 use App\Helpers\Util;
@@ -93,20 +93,7 @@ class MediaRelationManager extends RelationManager
           ->boolean()
           ->alignCenter(),
         Tables\Columns\ToggleColumn::make('is_active')
-          ->label(__("Activo"))
-          ->disabled(function (MediaRelationManager $livewire) {
-            $record = $livewire->getOwnerRecord();
-            if (in_array($record->approval_state, [VentureApprovalState::NEW , VentureApprovalState::REJECTED])) {
-              return false;
-            }
-            if (in_array($record->approval_state, [VentureApprovalState::APPROVAL])) {
-              return true;
-            }
-            if (in_array($record->approval_state, [VentureApprovalState::APPROVED]) && !$record->is_active) {
-              return true;
-            }
-            return false;
-          }),
+          ->label(__("Activo")),
       ])
       ->filters([
         //
@@ -117,14 +104,6 @@ class MediaRelationManager extends RelationManager
             ->label(__("Imagen para movil"))
             ->icon('heroicon-o-chevron-right')
             ->modalWidth('md')
-            ->visible(function (MediaRelationManager $livewire) {
-              $record = $livewire->getOwnerRecord();
-              if (in_array($record->approval_state, [VentureApprovalState::APPROVAL, VentureApprovalState::APPROVED]))
-                return false;
-              $max = Config::make()->getp('affiliateImageGallery.max', 1);
-              $imageCount = $record->media()->where('is_mobile', true)->count();
-              return ($imageCount < $max);
-            })
             ->form(fn(MediaRelationManager $livewire): array => $livewire->formSchema('mobile'))
             ->action(function (MediaRelationManager $livewire, array $data) {
               $data['is_mobile'] = true;
@@ -136,14 +115,6 @@ class MediaRelationManager extends RelationManager
             ->label(__("Imagen para desktop"))
             ->icon('heroicon-o-chevron-right')
             ->modalWidth('md')
-            ->visible(function (MediaRelationManager $livewire) {
-              $record = $livewire->getOwnerRecord();
-              if (in_array($record->approval_state, [VentureApprovalState::APPROVAL, VentureApprovalState::APPROVED]))
-                return false;
-              $max = Config::make()->getp('affiliateImageGallery.max', 1);
-              $imageCount = $record->media()->where('is_mobile', false)->count();
-              return ($imageCount < $max);
-            })
             ->form(fn(MediaRelationManager $livewire): array => $livewire->formSchema('desktop'))
             ->action(function (MediaRelationManager $livewire, array $data) {
               $livewire->getOwnerRecord()->media()->create($data);
@@ -159,30 +130,13 @@ class MediaRelationManager extends RelationManager
           ->hiddenLabel(),
         Tables\Actions\EditAction::make()
           ->hiddenLabel()
-          ->modalWidth('md')
-          ->visible(function (MediaRelationManager $livewire) {
-            $record = $livewire->getOwnerRecord();
-            return in_array($record->approval_state, [VentureApprovalState::NEW , VentureApprovalState::UPDATED, VentureApprovalState::REJECTED]);
-          }),
+          ->modalWidth('md'),
         Tables\Actions\DeleteAction::make()
-          ->hiddenLabel()
-          ->visible(function (MediaRelationManager $livewire) {
-            $record = $livewire->getOwnerRecord();
-
-            if (in_array($record->approval_state, [VentureApprovalState::APPROVED]) && !$record->is_active) {
-              return false;
-            }
-            return !in_array($record->approval_state, [VentureApprovalState::APPROVAL]);
-          }),
+          ->hiddenLabel(),
       ])
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([
-          Tables\Actions\DeleteBulkAction::make()
-            ->visible(function (MediaRelationManager $livewire) {
-              $record = $livewire->getOwnerRecord();
-              if ($record->approval_state != 0)
-                return false;
-            }),
+          Tables\Actions\DeleteBulkAction::make(),
         ]),
       ]);
   }

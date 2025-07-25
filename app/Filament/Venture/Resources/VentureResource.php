@@ -107,12 +107,16 @@ class VentureResource extends Resource
                   ->hiddenLabel()
                   ->size(Infolists\Components\TextEntry\TextEntrySize::Medium)
                   ->alignCenter(),
-                Infolists\Components\ImageEntry::make('file')
-                  ->hiddenLabel()
-                  ->disk('public')
-                  ->alignCenter()
-                  ->width(fn() => request()->input('mobile') ? 280 : 640)
-                  ->height(fn() => request()->input('mobile') ? 280 : 480),
+                Infolists\Components\ViewEntry::make('file')
+                  ->view('filament.infolists.entries.image', [
+                    'mobile' => request()->input('mobile'),
+                  ]),
+                // Infolists\Components\ImageEntry::make('file')
+                //   ->hiddenLabel()
+                //   ->disk('public')
+                //   ->alignCenter()
+                //   ->width(fn() => request()->input('mobile') ? 300 : 640)
+                //   ->height(fn() => request()->input('mobile') ? 300 : 480),
               ]),
 
           ]),
