@@ -120,11 +120,11 @@ class MemberResource extends Resource
           ->label(__('models/member.fields.email'))
           ->searchable()
           ->sortable(),
-        Tables\Columns\IconColumn::make('can_sponsor')
-          ->label(__('models/member.fields.can_sponsor'))
-          ->boolean()
-          ->alignCenter()
-          ->hidden(fn() => Util::isPanelActive('member')),
+        // Tables\Columns\IconColumn::make('can_sponsor')
+        //   ->label(__('models/member.fields.can_sponsor'))
+        //   ->boolean()
+        //   ->alignCenter()
+        //   ->hidden(fn() => Util::isPanelActive('member')),
         Tables\Columns\IconColumn::make('is_active')
           ->label(__('models/member.fields.is_active'))
           ->boolean()
@@ -155,23 +155,23 @@ class MemberResource extends Resource
               Mail::to($record)->send(new ActiveFlagToggled($record, $data));
               Util::filamentNotification('!OPERATION-SUCCESS');
             }),
-          Tables\Actions\Action::make('toggle-can-sponsor')
-            ->icon('heroicon-o-chevron-right')
-            ->label(__('actions/member.toggle-can-sponsor.label'))
-            ->modalWidth('sm')
-            ->form([
-              Forms\Components\Textarea::make('reason')
-                ->label(__('common.fields.reason'))
-                ->required(),
-            ])
-            ->action(function (Member $record, $data) {
-              $record->can_sponsor = !$record->can_sponsor;
-              $record->save();
-              $state = ($record->is_active) ? 'Activado' : 'Inactivado';
-              $record->addComment("Protrocinador {$state}, Memo: {$data['reason']}");
-              Mail::to($record)->send(new SponsorFlagToggled($record, $data));
-              Util::filamentNotification('!OPERATION-SUCCESS');
-            }),
+          // Tables\Actions\Action::make('toggle-can-sponsor')
+          //   ->icon('heroicon-o-chevron-right')
+          //   ->label(__('actions/member.toggle-can-sponsor.label'))
+          //   ->modalWidth('sm')
+          //   ->form([
+          //     Forms\Components\Textarea::make('reason')
+          //       ->label(__('common.fields.reason'))
+          //       ->required(),
+          //   ])
+          //   ->action(function (Member $record, $data) {
+          //     $record->can_sponsor = !$record->can_sponsor;
+          //     $record->save();
+          //     $state = ($record->is_active) ? 'Activado' : 'Inactivado';
+          //     $record->addComment("Protrocinador {$state}, Memo: {$data['reason']}");
+          //     Mail::to($record)->send(new SponsorFlagToggled($record, $data));
+          //     Util::filamentNotification('!OPERATION-SUCCESS');
+          //   }),
           Tables\Actions\Action::make('setPassword')
             ->icon('heroicon-o-key')
             ->label('Fijar Contraseña')
