@@ -7,8 +7,10 @@ use App\Filament\Member\Resources\VentureResource;
 use App\Filament\Shared\Resources\BaseVentureResource\Pages\BaseCreateVenture;
 use App\Helpers\Util;
 use App\Models\Category;
+use App\Models\Config;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class CreateVenture extends BaseCreateVenture
 {
@@ -40,13 +42,23 @@ class CreateVenture extends BaseCreateVenture
   {
     // $categories = $data['category'] ?? [];
     // unset($data['category']);
+
     $data['member_id'] = auth()->id();
     $data['is_active'] = false;
     $data['is_expired'] = false;
-    if (! ($data['expires_at'] ?? null)) {
-      $data['expires_at'] = now()->addDays(90);
+
+    $expirationType = $data['expiration_type'] ?? "default";
+    unset($data['expiration_type']);
+
+    if ($expirationType == "default") {
+      $data['expires_at'] = now()->addDays(Config::make()->getp('ventures.validity.default', 10));
       $data['is_extendable'] = true;
+    } else {
+      $data['expires_at'] = Carbon::createFromFormat("Y-m-d", $data['expires_at']);
+      $data['is_extendable'] = false;
     }
+    // dd($data);
+
     $venture = static::getModel()::create($data);
 
     // foreach ($data as $id) {

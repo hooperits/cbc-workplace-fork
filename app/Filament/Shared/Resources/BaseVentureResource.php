@@ -92,7 +92,7 @@ class BaseVentureResource extends Resource
                     Infolists\Components\ImageEntry::make('file')
                       ->label(false)
                       ->height(function (Venture $record) {
-                        if (! $record->file) {
+                        if (!$record->file) {
                           return 0;
                         }
                         $image = Storage::disk('public')->path($record->file);
@@ -100,7 +100,7 @@ class BaseVentureResource extends Resource
                         return $height;
                       })
                       ->width(function (Venture $record) {
-                        if (! $record->file) {
+                        if (!$record->file) {
                           return 0;
                         }
                         $image = Storage::disk('public')->path($record->file);
@@ -173,7 +173,7 @@ class BaseVentureResource extends Resource
               ->visibleOn(['create'])
               ->schema([
                 Forms\Components\Select::make('expiration_type')
-                  ->dehydrated(false)
+                  // ->dehydrated(false)
                   ->required()
                   ->live()
                   ->options([
@@ -212,7 +212,8 @@ class BaseVentureResource extends Resource
             Placeholder::make('note')
               ->hiddenLabel()
               ->visible(function (?Venture $record = null) {
-                if (! $record) return false;
+                if (!$record)
+                  return false;
                 return in_array($record->approval_state, [VentureApprovalState::APPROVED]);
               })
               ->content(new HtmlString('<div class="text-danger-600">Importante: Este emprendimiento fue aprobada. Si usted guarda este emprendimiento, se desactivará el emprendimiento y tendrá que solicitar la aprobación nuevamente.</div>')),
