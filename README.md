@@ -46,6 +46,7 @@ Permite a los miembros registrarse, publicar emprendimientos (ideas de negocio o
 - **Categorías de Empleo** — Clasificación de ofertas laborales con slug e ícono (Bolsa de Trabajo)
 - **Organizaciones** — Perfil de organización para miembros empleadores con flujo de verificación administrativa
 - **Bolsa de Trabajo** — Miembros de organizaciones verificadas publican ofertas de empleo con flujo de aprobación, cierre manual y expiración automática
+- **Bolsa de Trabajo Pública** — Listado anónimo de ofertas activas en `/bolsa-de-trabajo` con búsqueda por palabra clave (insensible a acentos), filtros multi-select (categoría, modalidad, contrato, ciudad), paginación y detalle SEO-amigable por slug. Sirve sitemap.xml para indexación de buscadores, marcado JobPosting JSON-LD, Open Graph para redes sociales, CTA de postulación adaptada al visitante (anónimo / miembro / candidato / admin), y meta `noindex,follow` en variantes filtradas/paginadas. Conformidad WCAG 2.1 AA; rate-limit selectivo en búsqueda con palabra clave (60 req/min)
 - **Perfiles de Candidato** — Perfil profesional del miembro con experiencia laboral, educación, CV y control de visibilidad
 - **Postulaciones a Empleo** — Los candidatos se postulan a ofertas activas con copia inmutable del CV y carta de presentación; las organizaciones gestionan postulantes mediante un flujo de estados (recibida → en revisión → entrevista → rechazada/aceptada, con saltos permitidos) con notas internas privadas y notificaciones por email en cada cambio; los administradores tienen vista global de solo lectura. PII anonimizado al borrar la cuenta del candidato.
 - **Gestión de Medios** — Adjuntar imágenes y archivos a emprendimientos
@@ -323,6 +324,13 @@ docker compose exec app php artisan migrate --seed
 
 # Sembrar categorías de empleo (Bolsa de Trabajo)
 docker compose exec app php artisan db:seed --class=JobCategorySeeder
+
+# Regenerar el sitemap.xml de la bolsa de trabajo pública (corre cada hora vía scheduler)
+docker compose exec app php artisan app:generate-sitemap
+
+# Repoblar las columnas folded (title_folded / description_folded) usadas
+# por la búsqueda insensible a acentos del listado público
+docker compose exec app php artisan app:backfill-folded-columns
 
 # Revertir última migración
 docker compose exec app php artisan migrate:rollback
