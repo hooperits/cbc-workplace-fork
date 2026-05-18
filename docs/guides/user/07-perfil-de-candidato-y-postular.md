@@ -18,7 +18,7 @@ Cada vez que postulas a un empleo, la organización recibe una **fotografía** d
 4. Completa los campos descritos en las secciones siguientes.
 5. Guarda los cambios.
 
-<!-- TODO captura: user-candidate-profile-create — formulario inicial de creación del perfil. -->
+![Figura 7.1 — Formulario inicial de creación del perfil de candidato.](../screenshots/user/user-candidate-profile-create.png)
 
 ## 7.3 Datos generales
 
@@ -46,7 +46,7 @@ Añade cada experiencia laboral relevante por separado. La plataforma soporta m�
    - **Descripción**: dos o tres puntos clave de lo que hiciste y los logros relevantes.
 4. Guarda.
 
-<!-- TODO captura: user-candidate-experience-add — formulario de añadir experiencia. -->
+![Figura 7.2 — Vista de edición del perfil de candidato con la sección de Experiencia laboral expandida.](../screenshots/user/user-candidate-experience-add.png)
 
 > **Atención.** Documenta cada experiencia con **logros concretos**, no solo responsabilidades. "Lideré el equipo de adoración con 12 miembros, organizando 50+ servicios anuales" es más fuerte que "Lideré el equipo de adoración".
 
@@ -91,7 +91,6 @@ Cuando un empleo te interese, postular es un solo paso.
 4. Aparece un formulario corto con un mensaje opcional para la organización.
 5. Pulsa **Enviar postulación**.
 
-<!-- TODO captura: user-candidate-submit-confirm — modal de confirmación tras enviar la postulación. -->
 
 **Qué pasa después.** El sistema guarda tu postulación con una "fotografía" de tu perfil en ese instante. La organización recibe un correo y puede ver tu postulación en su panel. Tú recibes un correo de confirmación.
 

@@ -28,6 +28,10 @@ TEMPLATE ?= docs/guides/templates/cbc-reference.docx
 BUILD    ?= docs/guides/build
 SCRIPTS  := docs/guides/scripts
 LUA      := $(SCRIPTS)/callout-filter.lua
+LUA_MERMAID := $(SCRIPTS)/mermaid-filter.lua
+MERMAID_SOURCES := $(wildcard docs/guides/diagrams/source/*.mmd)
+MERMAID_PNGS := $(patsubst docs/guides/diagrams/source/%.mmd,docs/guides/screenshots/impl/%.png,$(MERMAID_SOURCES))
+SYNTHETIC_SOURCES := $(wildcard docs/guides/synthetic/source/*.json)
 
 PANDOC ?= pandoc
 PYTHON ?= python3
@@ -44,7 +48,7 @@ endif
 OUT_FILES := $(foreach g,$(GUIDES),$(BUILD)/cbc-workplace-$(g).docx)
 PDF_FILES := $(foreach g,$(GUIDES),$(BUILD)/cbc-workplace-$(g).pdf)
 
-.PHONY: help guides guides-pdf reference-docx captures captures-only annotate annotate-only verify-captures lint clean clean-screenshots
+.PHONY: help guides guides-pdf reference-docx captures captures-only annotate annotate-only verify-captures lint clean clean-screenshots diagrams synthetic
 
 help:
 	@echo "Targets disponibles:"
@@ -60,9 +64,21 @@ help:
 	@echo "  make lint                Lintea Markdown bajo docs/guides/"
 	@echo "  make clean               Borra build/ (mantiene screenshots versionadas)"
 	@echo "  make clean-screenshots   Borra screenshots/ (requiere regenerar)"
+	@echo "  make diagrams            Renderiza los .mmd de docs/guides/diagrams/source/ a PNG"
+	@echo "  make synthetic           Renderiza las capturas sintéticas (terminal/config/table) a PNG"
 
-guides: $(OUT_FILES)
+guides: diagrams $(OUT_FILES)
 	@echo "[ok] Guías generadas: $(OUT_FILES)"
+
+diagrams: $(MERMAID_PNGS)
+	@echo "[ok] Diagramas Mermaid actualizados ($(words $(MERMAID_PNGS)) PNG)."
+
+docs/guides/screenshots/impl/%.png: docs/guides/diagrams/source/%.mmd docs/guides/diagrams/mermaid-config.json
+	@echo "[mermaid] Renderizando $< -> $@"
+	@$(NODE) docs/guides/scripts/render-mermaid.mjs --only $*
+
+synthetic:
+	@$(NODE) docs/guides/scripts/render-synthetic.mjs
 
 $(BUILD)/cbc-workplace-%.docx: docs/guides/%/*.md $(TEMPLATE) | $(BUILD)
 	@echo "[pandoc] Generando $@"
@@ -77,6 +93,7 @@ $(BUILD)/cbc-workplace-%.docx: docs/guides/%/*.md $(TEMPLATE) | $(BUILD)
 	  --resource-path=.:docs/guides:docs/guides/$* \
 	  --top-level-division=chapter \
 	  $(if $(wildcard $(LUA)),--lua-filter=$(LUA),) \
+	  $(if $(wildcard $(LUA_MERMAID)),--lua-filter=$(LUA_MERMAID),) \
 	  --output=$@ \
 	  $(sort $(filter-out docs/guides/$*/_%.md,$(wildcard docs/guides/$*/*.md)))
 

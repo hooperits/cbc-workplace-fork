@@ -39,7 +39,7 @@ Completa los datos esenciales del empleo:
 - **Ciudad** y **modalidad** (presencial, remoto, híbrido).
 - **Tipo de contrato**: tiempo completo, medio tiempo, voluntariado, por proyecto.
 
-<!-- TODO captura: user-job-create-step1 — paso 1 del wizard. -->
+![Figura 5.1 — Formulario de publicación de empleo en `/member/job-listings/create` (datos esenciales).](../screenshots/user/user-job-create-step1.png)
 
 > **Buena práctica.** El título es lo primero que ven los candidatos en el listado. Hazlo claro y específico. Evita títulos genéricos como "Persona para colaborar" — no atraen postulaciones de calidad.
 
@@ -50,7 +50,6 @@ Completa los datos esenciales del empleo:
 - **Requisitos**: formación, experiencia, idiomas, certificaciones específicas. Distingue entre **indispensables** y **deseables**.
 - **Beneficios**: sueldo (si aplica), beneficios extra, oportunidades de desarrollo.
 
-<!-- TODO captura: user-job-create-step2 — paso 2 del wizard. -->
 
 > **Importante.** Si tu organización ofrece **voluntariado** (sin pago), indícalo explícitamente. Publicar un empleo que parece remunerado y resulta no serlo daña tu reputación y desperdicia el tiempo de los candidatos.
 
@@ -62,7 +61,6 @@ Completa los datos esenciales del empleo:
   - **Guardar como borrador**: el empleo queda en estado borrador. Lo puedes seguir editando.
   - **Enviar a aprobación**: el empleo pasa a estado pendiente. El equipo administrador lo va a revisar.
 
-<!-- TODO captura: user-job-create-step3 — paso 3 del wizard. -->
 
 **Qué pasa después.** Si enviaste a aprobación, recibirás un correo cuando el equipo administrador apruebe (estado → activo) o rechace (estado → rechazado, con la razón). Mientras tanto, el empleo aparece en tu lista pero no en el portal público.
 

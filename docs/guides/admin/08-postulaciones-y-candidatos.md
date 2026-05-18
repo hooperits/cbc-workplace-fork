@@ -35,7 +35,7 @@ Para abrir el detalle:
 
 1. En el listado, haga clic sobre la fila de la postulación deseada.
 
-<!-- TODO captura: admin-application-view — pendiente de la próxima ronda de capturas. -->
+![Figura 8.2 — Vista de detalle de una postulación en `/admin/applications/{id}` con datos snapshot y CV adjunto.](../screenshots/admin/admin-application-view.png)
 
 La vista muestra:
 

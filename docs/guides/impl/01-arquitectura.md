@@ -50,7 +50,7 @@ flowchart LR
     Queue --> Mail[Mail<br/>app/Mail]
 ```
 
-<!-- TODO captura: impl-arch-overview — render del diagrama mermaid de arriba a PNG via `mmdc` durante la siguiente ronda de capturas. -->
+![Figura 1.1 — Arquitectura por capas: portal público + tres paneles Filament unificados por la capa de Actions.](../screenshots/impl/impl-arch-overview.png)
 
 ## 1.3 Tres paneles, tres guards
 
@@ -77,7 +77,7 @@ return $panel
 
 > Fuente: [`app/Providers/Filament/AdminPanelProvider.php:29-45`](../../../app/Providers/Filament/AdminPanelProvider.php).
 
-<!-- TODO captura: impl-arch-panels — diagrama mermaid de los 3 paneles + portal público con sus guards. -->
+![Figura 1.2 — Los tres paneles Filament + el portal público, con su guard y audiencia.](../screenshots/impl/impl-arch-panels.png)
 
 ### 1.3.1 Cuatro grupos de navegación en /admin
 

@@ -34,7 +34,7 @@ Para iniciar sesión:
 
 El panel inserta un texto descriptivo a la derecha del buscador global con el formato `ADMIN - <NOMBRE DEL ROL>`. Esta marca se renderiza desde el render hook `GLOBAL_SEARCH_AFTER` definido en [`app/Providers/Filament/AdminPanelProvider.php:71-74`](../../../app/Providers/Filament/AdminPanelProvider.php) y sirve como recordatorio constante del contexto en el que está operando.
 
-<!-- TODO captura: admin-global-search-role-badge — pendiente de la próxima ronda de capturas. -->
+![Figura 2.2 — La etiqueta `ADMIN - <rol>` aparece junto al buscador global como indicador del contexto del usuario autenticado.](../screenshots/admin/admin-global-search-role-badge.png)
 
 > **Buena práctica.** Si administra varios entornos (producción, staging, local) en pestañas paralelas, fíjese siempre en este badge antes de ejecutar una acción destructiva. Es la indicación más visible de qué cuenta y qué entorno está operando en la pestaña activa.
 

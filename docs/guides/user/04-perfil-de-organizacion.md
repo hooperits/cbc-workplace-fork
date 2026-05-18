@@ -17,7 +17,7 @@ Además, **antes de poder publicar empleos**, tu organización debe ser **verifi
 3. Completa el formulario con la información requerida (sección 4.3).
 4. Guarda los cambios.
 
-<!-- TODO captura: user-org-create-form — formulario de creación de organización. -->
+![Figura 4.1 — Formulario de creación de organización en `/member/organizations/create`.](../screenshots/user/user-org-create-form.png)
 
 ## 4.3 Información que necesitas tener a mano
 
@@ -37,7 +37,7 @@ Antes de empezar el formulario, ten lista esta información:
 
 Tras crear el perfil, **tu organización queda en estado pendiente**.
 
-<!-- TODO captura: user-org-pending-state — vista del perfil en estado pendiente. -->
+![Figura 4.2 — Dashboard del panel /member cuando la organización está en estado pendiente de verificación.](../screenshots/user/user-org-pending-state.png)
 
 El equipo administrador revisará los datos que proporcionaste y, si todo está en orden, marcará tu organización como **verificada**. Recibirás un correo cuando esto ocurra.
 
@@ -59,7 +59,7 @@ Cuando tu organización es verificada, ocurren tres cosas:
 2. En tu perfil aparece un **indicador de verificación**.
 3. En el menú de navegación aparece la opción para **publicar empleos** (capítulo 5).
 
-<!-- TODO captura: user-org-verified-state — perfil con badge de verificación. -->
+![Figura 4.3 — Dashboard del panel /member con la organización verificada y operando.](../screenshots/user/user-org-verified-state.png)
 
 > **Nota.** Una vez verificada, tu organización **no necesita re-verificarse** salvo que haya un cambio sustancial (cambio de razón social, cambio de propósito, etc.). En esos casos contacta al equipo administrador.
 
@@ -78,7 +78,7 @@ Una vez verificado, sigue siendo importante mantener el perfil actualizado:
 3. Edita los campos que necesites.
 4. Guarda los cambios.
 
-<!-- TODO captura: user-org-edit — formulario de edición del perfil. -->
+![Figura 4.4 — Formulario de edición del perfil de la organización.](../screenshots/user/user-org-edit.png)
 
 ## 4.8 ¿Mi perfil se ve público?
 

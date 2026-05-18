@@ -17,7 +17,6 @@ Cada empleo tiene su propia lista de postulaciones. Además, hay una vista conso
 
 1. Ve a **Postulaciones** en el menú principal (la opción aparece para organizaciones verificadas con empleos publicados).
 
-<!-- TODO captura: user-application-list — listado de postulaciones recibidas. -->
 
 ## 6.2 Estados de una postulación
 
@@ -42,7 +41,6 @@ Cada postulación pasa por estados que reflejan dónde está en tu proceso de se
 1. En el listado, haz clic sobre la fila del candidato.
 2. Se abre la vista de detalle con toda la información.
 
-<!-- TODO captura: user-application-view — vista de detalle de una postulación. -->
 
 La vista incluye:
 
@@ -63,7 +61,6 @@ La vista incluye:
 3. Elige el nuevo estado.
 4. Confirma.
 
-<!-- TODO captura: user-application-status-change — modal o control de cambio de estado. -->
 
 **Qué pasa después.** El candidato recibe un correo notificándole el cambio (excepto cuando el cambio es a "En revisión", que se considera estado interno y no notifica). El cambio de estado queda registrado con la fecha y la persona de tu equipo que lo hizo.
 
@@ -80,7 +77,6 @@ Mientras evalúas una postulación, querrás guardar observaciones para ti o par
 3. Escribe tu nota.
 4. Guarda.
 
-<!-- TODO captura: user-application-note — sección de notas internas con varias entradas. -->
 
 **Características importantes de las notas:**
 

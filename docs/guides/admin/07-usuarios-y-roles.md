@@ -81,7 +81,7 @@ La página presenta la lista de roles existentes y un formulario para crear, edi
 | Moderador | Aprueba/rechaza empleos y verifica organizaciones; no gestiona usuarios ni roles |
 | Soporte | Lectura amplia con escritura limitada a comentarios internos |
 
-<!-- TODO captura: admin-roles-manage — pendiente de la próxima ronda de capturas. -->
+![Figura 7.2 — Listado de roles en `/admin/roles` (Sistema → Roles).](../screenshots/admin/admin-roles-manage.png)
 
 > **Nota.** La matriz exacta de permisos vive en `app/Policies/` y se aplica por cada modelo (Organization, JobListing, Application, etc.). Para ver qué método de policy controla cada acción, consulte la *Guía de Implementación*, capítulo 6.
 

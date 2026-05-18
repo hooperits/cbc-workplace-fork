@@ -115,7 +115,7 @@ server {
 }
 ```
 
-<!-- TODO captura: impl-nginx-config-snippet — captura del archivo en /etc/nginx/sites-available/. -->
+![Figura 9.2 — Snippet de configuración Nginx con TLS, fastcgi a PHP-FPM y cabeceras de seguridad.](../screenshots/impl/impl-nginx-config-snippet.png)
 
 > **Atención.** Si Cloudflare sirve el portal público con caché, asegúrese de que las cabeceras `Cache-Control: public, max-age=60, stale-while-revalidate=600` que emite el middleware `PublicNoSessionCookie` (capítulo 7) lleguen intactas al edge. Las page rules de Cloudflare pueden sobreescribirlas.
 
@@ -151,7 +151,7 @@ stdout_logfile=/var/log/cbc-workplace/worker-instant.log
 stopwaitsecs=3600
 ```
 
-<!-- TODO captura: impl-supervisor-config — captura del archivo Supervisor. -->
+![Figura 9.3 — Configuración Supervisor para los pools `queue:work` y `schedule:work`.](../screenshots/impl/impl-supervisor-config.png)
 
 Justificación:
 
@@ -301,7 +301,7 @@ Si tras el deploy detecta un problema crítico:
 - [ ] `tail -f storage/logs/laravel.log` durante 5 minutos sin errores nuevos.
 - [ ] Un correo de prueba enviado a través del flujo de aprobación de oferta llega correctamente.
 
-<!-- TODO captura: impl-deploy-checklist-diagram — diagrama mermaid del flujo de deploy completo. -->
+![Figura 9.1 — Flujo completo del deploy: pre-deploy, durante, post-deploy.](../screenshots/impl/impl-deploy-checklist-diagram.png)
 
 ## 9.9 Backups
 

@@ -29,7 +29,7 @@ La siguiente tabla enumera los eventos relevantes para el administrador, agrupad
 | `mail-suspension-dispatch-enqueued` | [`SuspendOrganization.php:89-93`](../../../app/Actions/Admin/SuspendOrganization.php) | `recipient` |
 | `mail-suspension-dispatch-failed` | [`SuspendOrganization.php:96-103`](../../../app/Actions/Admin/SuspendOrganization.php) | `recipient`, `exception_class` |
 
-<!-- TODO captura: admin-activitylog-org-suspended — pendiente de la próxima ronda de capturas. -->
+![Figura 10.1 — Resultado tabular de una consulta directa contra `activity_log` filtrada por una organización suspendida (consulta solicitada al equipo técnico).](../screenshots/admin/admin-activitylog-org-suspended.png)
 
 ### 10.2.2 Empleos
 

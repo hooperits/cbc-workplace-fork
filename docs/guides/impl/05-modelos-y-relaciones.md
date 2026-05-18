@@ -20,7 +20,7 @@ erDiagram
     JobAlert ||--o{ JobAlertDispatchLog : "1 → n"
 ```
 
-<!-- TODO captura: impl-tree-models — render del diagrama mermaid arriba a PNG via mmdc. -->
+![Figura 5.1 — Diagrama de entidades y relaciones del módulo Bolsa de Trabajo.](../screenshots/impl/impl-tree-models.png)
 
 ## 5.2 Organization
 

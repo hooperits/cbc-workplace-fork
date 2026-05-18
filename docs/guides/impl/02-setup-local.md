@@ -17,7 +17,7 @@ Antes de clonar, verifique en su máquina:
 
 ## 2.2 Clonar el repositorio
 
-<!-- TODO captura: impl-terminal-clone — captura de terminal del clone + cd. -->
+![Figura 2.1 — Clonado del repositorio y entrada al directorio de trabajo.](../screenshots/impl/impl-terminal-clone.png)
 
 ```bash
 git clone git@github.com:hooperits/cbc-workplace.git
@@ -68,7 +68,7 @@ docker run --rm -u "$(id -u):$(id -g)" \
 
 ## 2.4 Levantar Sail
 
-<!-- TODO captura: impl-terminal-sail-up — captura de `sail up -d` con servicios healthy. -->
+![Figura 2.2 — `sail up -d` con los tres servicios principales en estado healthy.](../screenshots/impl/impl-terminal-sail-up.png)
 
 ```bash
 ./vendor/bin/sail up -d
@@ -102,7 +102,7 @@ El comando escribe la variable `APP_KEY` en su `.env`. Si la variable ya existe,
 
 ## 2.6 Migrar la base de datos
 
-<!-- TODO captura: impl-terminal-migrate-seed — captura del migrate fresh + seed. -->
+![Figura 2.3 — `migrate:fresh --seed` aplicando todas las migraciones y poblando datos base.](../screenshots/impl/impl-terminal-migrate-seed.png)
 
 ```bash
 sail artisan migrate:fresh
@@ -149,7 +149,7 @@ Ambos seeders son **idempotentes** y crean cuentas reproducibles para el pipelin
 | Candidato 1 | `candidate-1@example.com` | `password` | `/member` |
 | Candidato 2 | `candidate-2@example.com` | `password` | `/member` |
 
-<!-- TODO captura: impl-terminal-seed-spec009 — captura de la salida del seeder. -->
+![Figura 2.4 — Salida de `db:seed --class=Spec009DemoSeeder` + `GuidesDemoSeeder` creando cuentas reproducibles.](../screenshots/impl/impl-terminal-seed-spec009.png)
 
 > **Importante.** Estos seeders están diseñados **exclusivamente** para entornos `local` y `testing`. **No** los ejecute en `production`. Su `.env` debe tener `APP_ENV=local` antes de continuar.
 
@@ -157,7 +157,7 @@ Ambos seeders son **idempotentes** y crean cuentas reproducibles para el pipelin
 
 Para procesar correos encolados (suspensiones, digests, etc.) y jobs:
 
-<!-- TODO captura: impl-terminal-queue-worker — captura del worker en ejecución. -->
+![Figura 2.5 — Worker `queue:work` procesando jobs de las colas `instant`, `default` y `emails`.](../screenshots/impl/impl-terminal-queue-worker.png)
 
 ```bash
 sail artisan queue:work --queue=instant,default --tries=3 --max-time=3600
@@ -169,7 +169,7 @@ Mantenga el worker corriendo en una terminal aparte mientras desarrolle. Si nece
 
 Para que los digests diarios y semanales se despachen en local:
 
-<!-- TODO captura: impl-terminal-schedule-work — captura del scheduler. -->
+![Figura 2.6 — `schedule:work` ejecutando las tareas programadas (digests diarios y poda de jobs fallidos).](../screenshots/impl/impl-terminal-schedule-work.png)
 
 ```bash
 sail artisan schedule:work

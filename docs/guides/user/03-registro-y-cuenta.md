@@ -24,7 +24,7 @@ Una misma cuenta puede tener ambos perfiles. Pero típicamente se usa para uno o
 3. Acepta los términos y condiciones tras leerlos.
 4. Haz clic en **Registrarse**.
 
-<!-- TODO captura: user-register-form — formulario de registro. -->
+![Figura 3.1 — Formulario de registro en `/member/register`.](../screenshots/user/user-register-form.png)
 
 **Qué pasa después.** El sistema crea tu cuenta y te envía un correo de verificación a la dirección que indicaste. Hasta que verifiques el correo, no podrás postular ni publicar.
 
@@ -34,7 +34,7 @@ Una misma cuenta puede tener ambos perfiles. Pero típicamente se usa para uno o
 
 Abre tu bandeja de entrada y busca un correo de CBC Workplace. El asunto incluye una indicación clara: "Verifique su dirección de correo electrónico" o similar.
 
-<!-- TODO captura: user-verify-email-mailpit — captura de Mailpit con el correo de verificación. -->
+![Figura 3.2 — Correo de verificación capturado por Mailpit en el entorno de pruebas local.](../screenshots/user/user-verify-email-mailpit.png)
 
 **Para verificar:**
 

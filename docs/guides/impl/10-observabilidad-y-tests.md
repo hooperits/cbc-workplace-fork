@@ -22,7 +22,7 @@ LOG_LEVEL=warning
 
 Con `daily` se rota un archivo diario en `storage/logs/laravel-YYYY-MM-DD.log` con retención configurable. Con `stderr` los logs van al stdout del contenedor para que el orquestador (Docker, Kubernetes) los capture.
 
-<!-- TODO captura: impl-laravel-log-tail — captura de tail -f del laravel.log con actividad reciente. -->
+![Figura 10.1 — `tail -f` del `laravel.log` mostrando el log estructurado de un dispatch diario + una suspensión.](../screenshots/impl/impl-laravel-log-tail.png)
 
 ```bash
 tail -f storage/logs/laravel-$(date +%F).log
@@ -42,7 +42,7 @@ Consulta típica desde Tinker:
     ->get();
 ```
 
-<!-- TODO captura: impl-activitylog-query — captura de una consulta en Tinker contra activity_log. -->
+![Figura 10.2 — Resultado tabular de una consulta a `activity_log` filtrada por eventos recientes.](../screenshots/impl/impl-activitylog-query.png)
 
 ### 10.1.3 Job Alert Dispatch Log
 
@@ -101,11 +101,11 @@ sail bin pest --coverage             # con reporte de cobertura
 sail bin pest --coverage-min=80      # falla si cobertura < 80%
 ```
 
-<!-- TODO captura: impl-pest-run-all — captura de pest pasando con N tests verdes. -->
+![Figura 10.3 — Suite Pest completa con 344 tests pasando.](../screenshots/impl/impl-pest-run-all.png)
 
-<!-- TODO captura: impl-pest-run-alerts — captura de pest --filter=Alerts. -->
+![Figura 10.4 — `pest --filter=Alerts` mostrando los tests del pipeline de alertas.](../screenshots/impl/impl-pest-run-alerts.png)
 
-<!-- TODO captura: impl-coverage-report — captura del reporte HTML de cobertura. -->
+![Figura 10.5 — Reporte de cobertura por carpeta (≥ 80% en módulos críticos).](../screenshots/impl/impl-coverage-report.png)
 
 ## 10.5 Patrones aceptados
 

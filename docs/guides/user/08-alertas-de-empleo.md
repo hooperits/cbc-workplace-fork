@@ -61,7 +61,7 @@ Cuando una alerta dispara, el correo que recibes incluye:
 - **Enlaces directos** a cada empleo en el portal público (no necesitas iniciar sesión para abrirlos).
 - **Enlace de desuscripción** al pie del correo.
 
-<!-- TODO captura: user-mailpit-digest-daily — correo digest diario en Mailpit. -->
+![Figura 8.3 — Digest diario capturado por Mailpit: asunto, listado de empleos y enlaces directos.](../screenshots/user/user-mailpit-digest-daily.png)
 
 > **Atención.** Los correos vienen desde una dirección oficial de la plataforma. Si los recibes de una dirección distinta, **no hagas clic** y reporta el hecho al equipo administrador (posible suplantación).
 
@@ -74,7 +74,7 @@ Cuando una alerta dispara, el correo que recibes incluye:
 3. Modifica criterios o frecuencia.
 4. Guarda.
 
-<!-- TODO captura: user-alert-edit — formulario de edición. -->
+![Figura 8.4 — Formulario de edición de una alerta de empleo.](../screenshots/user/user-alert-edit.png)
 
 > **Nota.** Editar una alerta no envía un digest retroactivo. Los próximos disparos aplicarán los nuevos criterios.
 
@@ -87,7 +87,7 @@ A veces conviene pausar una alerta sin borrarla del todo: por ejemplo, durante u
 1. En **Mis alertas**, localiza la alerta.
 2. Cambia el toggle de **Activa** a **Inactiva**.
 
-<!-- TODO captura: user-alert-toggle-disable — toggle de pausa de alerta. -->
+![Figura 8.5 — Listado de alertas con el toggle de activación visible para cada fila.](../screenshots/user/user-alert-toggle-disable.png)
 
 **Para reanudar:** vuelve a cambiar el toggle a **Activa**.
 
@@ -111,7 +111,7 @@ Cada digest tiene al pie un enlace de **desuscribirse**. Si pulsas ese enlace:
 2. Confirmas que quieres dejar de recibir esa alerta específica.
 3. La alerta queda desactivada inmediatamente.
 
-<!-- TODO captura: user-unsubscribe-landing — página de confirmación tras pulsar el enlace de desuscripción. -->
+![Figura 8.6 — Página de confirmación de desuscripción tras pulsar el enlace del pie del correo.](../screenshots/user/user-unsubscribe-landing.png)
 
 Este enlace **no requiere iniciar sesión**: la URL lleva una firma criptográfica que identifica tu alerta. Por seguridad, el enlace solo funciona para la alerta de ese correo, no afecta a tus otras alertas activas.
 

@@ -141,7 +141,7 @@ flowchart TD
     F -- no --> H[DENEGAR]
 ```
 
-<!-- TODO captura: impl-arch-suspension-cascade — render del diagrama mermaid arriba. -->
+![Figura 6.1 — Cascada de congelamiento por suspensión: cada policy del panel /member chequea primero el estado de la organización.](../screenshots/impl/impl-arch-suspension-cascade.png)
 
 Ejemplo de [`JobListingPolicy::update()`](../../../app/Policies/JobListingPolicy.php:54-65):
 

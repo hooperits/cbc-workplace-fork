@@ -228,5 +228,154 @@
     "wait": [{ "type": "timeout", "value": 800 }],
     "outputPath": "docs/guides/screenshots/impl/impl-mailpit-inbox.png",
     "caption": "Figura 8.5 — Bandeja Mailpit local mostrando emails capturados durante pruebas."
+  },
+
+  {
+    "slug": "admin-global-search-role-badge",
+    "guide": "admin",
+    "auth": { "panel": "admin", "username": "admin_spec009", "password": "password" },
+    "url": "/admin",
+    "wait": [{ "type": "selector", "value": ".fi-topbar" }, { "type": "timeout", "value": 500 }],
+    "outputPath": "docs/guides/screenshots/admin/admin-global-search-role-badge.png",
+    "caption": "Figura 2.2 — La etiqueta `ADMIN - <rol>` aparece junto al buscador global como contexto del usuario autenticado."
+  },
+  {
+    "slug": "admin-roles-manage",
+    "guide": "admin",
+    "auth": { "panel": "admin", "username": "admin_spec009", "password": "password" },
+    "url": "/admin/roles",
+    "wait": [{ "type": "selector", "value": ".fi-ta-table" }, { "type": "timeout", "value": 400 }],
+    "outputPath": "docs/guides/screenshots/admin/admin-roles-manage.png",
+    "caption": "Figura 7.2 — Listado de roles en `/admin/roles` (Sistema → Roles)."
+  },
+  {
+    "slug": "admin-application-view",
+    "guide": "admin",
+    "auth": { "panel": "admin", "username": "admin_spec009", "password": "password" },
+    "url": "/admin/applications/1",
+    "wait": [{ "type": "selector", "value": ".fi-section" }, { "type": "timeout", "value": 400 }],
+    "outputPath": "docs/guides/screenshots/admin/admin-application-view.png",
+    "caption": "Figura 8.2 — Vista de detalle de una postulación en el panel /admin."
+  },
+
+  {
+    "slug": "user-register-form",
+    "guide": "user",
+    "url": "/member/register",
+    "wait": [{ "type": "selector", "value": "form.fi-form" }, { "type": "timeout", "value": 400 }],
+    "outputPath": "docs/guides/screenshots/user/user-register-form.png",
+    "caption": "Figura 3.1 — Formulario de registro del portal /member."
+  },
+  {
+    "slug": "user-org-create-form",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "candidate-new@example.com", "password": "password" },
+    "url": "/member/organizations/create",
+    "wait": [{ "type": "selector", "value": "form.fi-form" }, { "type": "timeout", "value": 500 }],
+    "outputPath": "docs/guides/screenshots/user/user-org-create-form.png",
+    "caption": "Figura 4.1 — Formulario de creación de organización."
+  },
+  {
+    "slug": "user-org-pending-state",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "org-pending@example.com", "password": "password" },
+    "url": "/member",
+    "wait": [{ "type": "selector", "value": ".fi-page" }, { "type": "timeout", "value": 600 }],
+    "outputPath": "docs/guides/screenshots/user/user-org-pending-state.png",
+    "caption": "Figura 4.2 — Dashboard del panel /member mostrando el estado pendiente de verificación de la organización."
+  },
+  {
+    "slug": "user-org-verified-state",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "org-verified@example.com", "password": "password" },
+    "url": "/member",
+    "wait": [{ "type": "selector", "value": ".fi-page" }, { "type": "timeout", "value": 600 }],
+    "outputPath": "docs/guides/screenshots/user/user-org-verified-state.png",
+    "caption": "Figura 4.3 — Dashboard del panel /member con la organización verificada y operando normalmente."
+  },
+  {
+    "slug": "user-org-edit",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "org-verified@example.com", "password": "password" },
+    "url": "/member/organizations/1/edit",
+    "wait": [{ "type": "selector", "value": "form.fi-form" }, { "type": "timeout", "value": 500 }],
+    "outputPath": "docs/guides/screenshots/user/user-org-edit.png",
+    "caption": "Figura 4.4 — Formulario de edición del perfil de la organización."
+  },
+  {
+    "slug": "user-job-create-step1",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "org-verified@example.com", "password": "password" },
+    "url": "/member/job-listings/create",
+    "wait": [{ "type": "selector", "value": ".fi-wi-step, form.fi-form" }, { "type": "timeout", "value": 500 }],
+    "outputPath": "docs/guides/screenshots/user/user-job-create-step1.png",
+    "caption": "Figura 5.1 — Paso 1 del wizard de publicación de empleos: información básica."
+  },
+  {
+    "slug": "user-candidate-profile-create",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "candidate-new@example.com", "password": "password" },
+    "url": "/member/candidate-profiles",
+    "wait": [{ "type": "selector", "value": "form.fi-form" }, { "type": "timeout", "value": 700 }],
+    "outputPath": "docs/guides/screenshots/user/user-candidate-profile-create.png",
+    "caption": "Figura 7.1 — Formulario inicial de creación del perfil de candidato (redirige automáticamente desde /member/candidate-profiles)."
+  },
+  {
+    "slug": "user-candidate-experience-add",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "candidate@example.com", "password": "password" },
+    "url": "/member/candidate-profiles/1/edit",
+    "wait": [{ "type": "selector", "value": "form.fi-form" }, { "type": "timeout", "value": 500 }],
+    "preActions": [
+      { "type": "click", "selector": "button:has-text('experiencia'), button:has-text('Experiencia'), button:has-text('agregar')" },
+      { "type": "wait", "ms": 500 }
+    ],
+    "outputPath": "docs/guides/screenshots/user/user-candidate-experience-add.png",
+    "caption": "Figura 7.2 — Formulario para añadir una experiencia laboral al perfil del candidato."
+  },
+  {
+    "slug": "user-alert-edit",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "candidate@example.com", "password": "password" },
+    "url": "/member/job-alerts/1/edit",
+    "wait": [{ "type": "selector", "value": "form.fi-form" }, { "type": "timeout", "value": 500 }],
+    "outputPath": "docs/guides/screenshots/user/user-alert-edit.png",
+    "caption": "Figura 8.3 — Formulario de edición de una alerta de empleo."
+  },
+  {
+    "slug": "user-alert-toggle-disable",
+    "guide": "user",
+    "auth": { "panel": "member", "email": "candidate@example.com", "password": "password" },
+    "url": "/member/job-alerts",
+    "wait": [{ "type": "selector", "value": ".fi-ta-table" }, { "type": "timeout", "value": 500 }],
+    "outputPath": "docs/guides/screenshots/user/user-alert-toggle-disable.png",
+    "caption": "Figura 8.4 — Listado de alertas con el toggle de activación visible para cada fila."
+  },
+  {
+    "slug": "user-unsubscribe-landing",
+    "guide": "user",
+    "url": "/alerts/unsubscribe/1/1?signature=7d9ae4b0fb3c341f7b1b7ce8335fcc5cf1e5bbef395c1c4a8043075d03fbf46b",
+    "wait": [{ "type": "selector", "value": "main, body" }, { "type": "timeout", "value": 600 }],
+    "outputPath": "docs/guides/screenshots/user/user-unsubscribe-landing.png",
+    "caption": "Figura 8.5 — Página de confirmación de desuscripción tras pulsar el enlace del pie del correo."
+  },
+
+  {
+    "slug": "user-verify-email-mailpit",
+    "guide": "user",
+    "url": "http://localhost:8025/search?q=subject%3AVerifique",
+    "absoluteUrl": true,
+    "wait": [{ "type": "timeout", "value": 1000 }],
+    "outputPath": "docs/guides/screenshots/user/user-verify-email-mailpit.png",
+    "caption": "Figura 3.2 — Mailpit captura el correo de verificación enviado durante el registro."
+  },
+  {
+    "slug": "user-mailpit-digest-daily",
+    "guide": "user",
+    "url": "http://localhost:8025/search?q=subject%3AResumen",
+    "absoluteUrl": true,
+    "wait": [{ "type": "timeout", "value": 1000 }],
+    "outputPath": "docs/guides/screenshots/user/user-mailpit-digest-daily.png",
+    "caption": "Figura 8.6 — Mailpit muestra el digest diario enviado por el scheduler a las 07:00."
   }
 ]

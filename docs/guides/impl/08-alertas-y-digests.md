@@ -38,7 +38,7 @@ sequenceDiagram
     Dispatch->>Mail: queue correo
 ```
 
-<!-- TODO captura: impl-arch-alerts-pipeline — render del diagrama mermaid arriba. -->
+![Figura 8.1 — Pipeline asíncrono de alertas instantáneas tras la aprobación de una oferta.](../screenshots/impl/impl-arch-alerts-pipeline.png)
 
 ### 8.2.1 El evento
 
@@ -108,7 +108,7 @@ flowchart LR
     Build --> Mail[Mail::to($member)->queue($digest)]
 ```
 
-<!-- TODO captura: impl-arch-daily-digest — render del diagrama mermaid arriba. -->
+![Figura 8.2 — Pipeline del digest diario disparado por el scheduler a las 07:00.](../screenshots/impl/impl-arch-daily-digest.png)
 
 Programación en [`app/Console/Kernel.php:20-25`](../../../app/Console/Kernel.php):
 
