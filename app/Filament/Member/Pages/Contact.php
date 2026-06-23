@@ -18,116 +18,118 @@ use Filament\Pages\Page;
 
 class Contact extends Page implements HasForms
 {
-    use InteractsWithFormActions, InteractsWithForms;
+  use InteractsWithFormActions, InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+  protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.member.pages.contact';
+  protected static string $view = 'filament.member.pages.contact';
 
-    public ?array $data = [];
+  protected static bool $shouldRegisterNavigation = false;
 
-    public Member $user;
+  public ?array $data = [];
 
-    public function mount(): void
-    {
-        $this->user = auth()->guard('member')->user();
-        $this->form->fill([
-            'name' => $this->user->contact->name ?? '',
-            'email' => $this->user->contact->email ?? '',
-            'phone' => $this->user->contact->phone ?? '',
-            'mobile' => $this->user->contact->mobile ?? '',
-            'address' => $this->user->contact->address ?? '',
-            'location' => $this->user->contact->location ?? '',
-            'social' => $this->user->contact->social ?? null,
-        ]);
-    }
+  public Member $user;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\Action::make('back')
-                ->label(__('Volver'))
-                ->color('gray')
-                ->url(url()->route('filament.member.pages.dashboard')),
-            Actions\Action::make('request-membership')
-                ->label(__('actions/member.request-membership.label'))
-                ->disabled(fn ($livewire) => $livewire->user->membership_state === MembershipState::APPROVED)
-                ->requiresConfirmation()
-                ->action(function (array $data) {
-                    /** @var Member $user */
-                    if (! $this->user->contact?->email) {
-                        Util::filamentNotification(__('Favor complete su datos de contacto'), 'warning');
+  public function mount(): void
+  {
+    $this->user = auth()->guard('member')->user();
+    $this->form->fill([
+      'name' => $this->user->contact->name ?? '',
+      'email' => $this->user->contact->email ?? '',
+      'phone' => $this->user->contact->phone ?? '',
+      'mobile' => $this->user->contact->mobile ?? '',
+      'address' => $this->user->contact->address ?? '',
+      'location' => $this->user->contact->location ?? '',
+      'social' => $this->user->contact->social ?? null,
+    ]);
+  }
 
-                        return;
-                    }
+  protected function getHeaderActions(): array
+  {
+    return [
+      Action::make('back')
+          ->label(__('Volver'))
+          ->color('gray')
+          ->url(url()->route('filament.member.pages.dashboard')),
+      Action::make('request-membership')
+          ->label(__('actions/member.request-membership.label'))
+          ->disabled(fn ($livewire) => $livewire->user->membership_state === MembershipState::APPROVED)
+          ->requiresConfirmation()
+          ->action(function (array $data) {
+            /** @var Member $user */
+            if (! $this->user->contact?->email) {
+              Util::filamentNotification(__('Favor complete su datos de contacto'), 'warning');
 
-                    if (Affiliate::run($this->user)) {
-                        Util::filamentNotification('!OPERATION-SUCCESS');
-                        $this->redirect(url()->route('filament.member.resources.ventures.index'));
-                    }
-                }),
-            Actions\ActionGroup::make([])
-                ->button()
-                ->label(__('Opciones')),
-        ];
-    }
+              return;
+            }
 
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Section::make()
-                    ->columns(2)
+            if (Affiliate::run($this->user)) {
+              Util::filamentNotification('!OPERATION-SUCCESS');
+              $this->redirect(url()->route('filament.member.resources.ventures.index'));
+            }
+          }),
+      Actions\ActionGroup::make([])
+          ->button()
+          ->label(__('Opciones')),
+    ];
+  }
+
+  public function form(Form $form): Form
+  {
+    return $form
+        ->schema([
+          Forms\Components\Section::make()
+              ->columns(2)
+              ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->label(__('Nombre Completo'))
+                    ->required(),
+                Forms\Components\TextInput::make('email')
+                    ->label(__('Email'))
+                    ->email()
+                    ->required(),
+                Forms\Components\TextInput::make('phone')
+                    ->label(__('Teléfono')),
+                Forms\Components\TextInput::make('mobile')
+                    ->label(__('Celular')),
+                Forms\Components\TextInput::make('address')
+                    ->label(__('Dirección'))
+                    ->columnSpanFull(),
+                // Forms\Components\TextInput::make('location')
+                //   ->label(__("Ubicación")),
+                Forms\Components\Repeater::make('social')
+                    ->label(__('Redes Sociales'))
+                    ->columnSpanFull()
                     ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label(__('Nombre Completo'))
-                            ->required(),
-                        Forms\Components\TextInput::make('email')
-                            ->label(__('Email'))
-                            ->email()
-                            ->required(),
-                        Forms\Components\TextInput::make('phone')
-                            ->label(__('Teléfono')),
-                        Forms\Components\TextInput::make('mobile')
-                            ->label(__('Celular')),
-                        Forms\Components\TextInput::make('address')
-                            ->label(__('Dirección'))
-                            ->columnSpanFull(),
-                        // Forms\Components\TextInput::make('location')
-                        //   ->label(__("Ubicación")),
-                        Forms\Components\Repeater::make('social')
-                            ->label(__('Redes Sociales'))
-                            ->columnSpanFull()
-                            ->schema([
-                                Forms\Components\Select::make('network')
-                                    ->options(Config::make()->getp('social.networks'))
-                                    ->required(),
-                                Forms\Components\TextInput::make('url')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->helperText(__('Coloque el url iniciando con https://')),
-                            ])
-                            ->columns(2),
+                      Forms\Components\Select::make('network')
+                          ->options(Config::make()->getp('social.networks'))
+                          ->required(),
+                      Forms\Components\TextInput::make('url')
+                          ->required()
+                          ->maxLength(255)
+                          ->helperText(__('Coloque el url iniciando con https://')),
+                    ])
+                    ->columns(2),
 
-                    ]),
-            ])
-            ->statePath('data');
-    }
+              ]),
+        ])
+        ->statePath('data');
+  }
 
-    protected function getFormActions(): array
-    {
-        return [
-            Action::make('submit')
-                ->label(__('Guardar'))
-                ->submit('submit'),
-        ];
-    }
+  protected function getFormActions(): array
+  {
+    return [
+      Action::make('submit')
+          ->label(__('Guardar'))
+          ->submit('submit'),
+    ];
+  }
 
-    public function submit(): void
-    {
-        $data = $this->form->getState();
-        // dd($data);
-        $this->user->contact()->updateOrCreate([], $data);
-        Util::filamentNotification('!OPERATION-SUCCESS');
-    }
+  public function submit(): void
+  {
+    $data = $this->form->getState();
+    // dd($data);
+    $this->user->contact()->updateOrCreate([], $data);
+    Util::filamentNotification('!OPERATION-SUCCESS');
+  }
 }

@@ -9,15 +9,17 @@ use App\Enums\OrganizationVerificationState;
 use App\Filament\Member\Resources\OrganizationResource;
 use App\Helpers\Util;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\EditAction;
+use Filament\Resources\Pages\ViewRecord;
 
-class EditOrganization extends EditRecord
+class ViewOrganization extends ViewRecord
 {
   protected static string $resource = OrganizationResource::class;
 
   protected function getHeaderActions(): array
   {
     return [
+      EditAction::make(),
       Actions\Action::make('request-verification')
           ->label(__('actions/member.request-organization-verification.label'))
           ->icon('heroicon-o-shield-check')
@@ -34,7 +36,7 @@ class EditOrganization extends EditRecord
     ];
   }
 
-  protected function getFormActions(): array
+  public function getFormActions(): array
   {
     if ($this->record->is_suspended()) {
       return [];
@@ -43,10 +45,10 @@ class EditOrganization extends EditRecord
     return parent::getFormActions();
   }
 
-  protected function getRedirectUrl(): string
-  {
-    return OrganizationResource::getUrl('edit', ['record' => $this->record]);
-  }
+  // protected function getRedirectUrl(): string
+  // {
+  //   return OrganizationResource::getUrl('edit', ['record' => $this->record]);
+  // }
 
   protected function getSavedNotificationTitle(): ?string
   {

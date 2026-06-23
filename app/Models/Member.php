@@ -25,102 +25,102 @@ use Illuminate\Support\Facades\Storage;
 
 class Member extends Authenticatable implements CanResetPassword, FilamentUser, HasAvatar, MustVerifyEmail
 {
-    use CanResetPasswordTrait;
-    use HasFactory;
-    use Notifiable;
+  use CanResetPasswordTrait;
+  use HasFactory;
+  use Notifiable;
 
-    protected $guarded = [
-        'remember_token',
-    ];
+  protected $guarded = [
+    'remember_token',
+  ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+  protected $hidden = [
+    'password',
+    'remember_token',
+  ];
 
-    protected $casts = [
-        'type' => MemberType::class,
-        'membership_state' => MembershipState::class,
-        'membership_approval_at' => 'datetime',
-        'expires_at' => 'datetime',
-        'social_medias' => 'array',
-        'is_active' => 'boolean',
-        'is_blocked' => 'boolean',
-        'password' => 'hashed',
-    ];
+  protected $casts = [
+    'type' => MemberType::class,
+    'membership_state' => MembershipState::class,
+    'membership_approval_at' => 'datetime',
+    'expires_at' => 'datetime',
+    'social_medias' => 'array',
+    'is_active' => 'boolean',
+    'is_blocked' => 'boolean',
+    'password' => 'hashed',
+  ];
 
-    protected static function booted(): void
-    {
-        static::deleting(function (Member $record) {
-            if ($record->ventures) {
-                $record->ventures->categories()->detach();
-                $record->ventures()->media()->delete();
-            }
+  protected static function booted(): void
+  {
+    static::deleting(function (Member $record) {
+      if ($record->ventures) {
+        $record->ventures->categories()->detach();
+        $record->ventures()->media()->delete();
+      }
 
-            // FR-023: anonymize applications PII before the member row is removed.
-            \App\Actions\Admin\AnonymizeMemberApplications::run($record);
-        });
-    }
+      // FR-023: anonymize applications PII before the member row is removed.
+      \App\Actions\Admin\AnonymizeMemberApplications::run($record);
+    });
+  }
 
-    public function sponsor(): MorphOne
-    {
-        return $this->morphOne(Invitation::class, 'sponsor');
-    }
+  public function sponsor(): MorphOne
+  {
+    return $this->morphOne(Invitation::class, 'sponsor');
+  }
 
-    public function contact(): HasOne
-    {
-        return $this->hasOne(MemberContact::class);
-    }
+  public function contact(): HasOne
+  {
+    return $this->hasOne(MemberContact::class);
+  }
 
-    public function invitation(): BelongsTo
-    {
-        return $this->belongsTo(Invitation::class);
-    }
+  public function invitation(): BelongsTo
+  {
+    return $this->belongsTo(Invitation::class);
+  }
 
-    public function comments(): MorphMany
-    {
-        return $this->morphMany(Comments::class, 'commentable');
-    }
+  public function comments(): MorphMany
+  {
+    return $this->morphMany(Comments::class, 'commentable');
+  }
 
-    public function favorites(): HasMany
-    {
-        return $this->hasMany(Favorite::class);
-    }
+  public function favorites(): HasMany
+  {
+    return $this->hasMany(Favorite::class);
+  }
 
-    public function organization(): HasOne
-    {
-        return $this->hasOne(Organization::class);
-    }
+  public function organization(): HasOne
+  {
+    return $this->hasOne(Organization::class);
+  }
 
-    public function candidateProfile(): HasOne
-    {
-        return $this->hasOne(CandidateProfile::class);
-    }
+  public function candidateProfile(): HasOne
+  {
+    return $this->hasOne(CandidateProfile::class);
+  }
 
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
+  public function role()
+  {
+    return $this->belongsTo(Role::class);
+  }
 
-    public function addComment(string $comment)
-    {
-        $this->comments()->create(['comment' => $comment, 'comment_by' => Filament::auth()->user()->name]);
-    }
+  public function addComment(string $comment)
+  {
+    $this->comments()->create(['comment' => $comment, 'comment_by' => Filament::auth()->user()->name]);
+  }
 
-    public function canAccessPanel(Panel $panel): bool
-    {
-        $canAccess = $panel->getId() === 'member' && ($this instanceof self) && ($this->is_active && ! $this->is_blocked);
+  public function canAccessPanel(Panel $panel): bool
+  {
+    $canAccess = $panel->getId() === 'member' && ($this instanceof self) && ($this->is_active && ! $this->is_blocked);
 
-        return $canAccess;
-    }
+    return $canAccess;
+  }
 
-    public function getFilamentAvatarUrl(): ?string
-    {
-        return "https://ui-avatars.com/api/?name={$this->name}";
-        // return $this->avatar
+  public function getFilamentAvatarUrl(): ?string
+  {
+    return "https://ui-avatars.com/api/?name={$this->name}";
+    // return $this->avatar
         //   ? Storage::disk('avatars')->url($this->avatar)
         //   : "https://ui-avatars.com/api/?name={$this->name}";
-    }
+  }
 
     //  protected function password(): Attribute
     //  {
@@ -129,50 +129,55 @@ class Member extends Authenticatable implements CanResetPassword, FilamentUser, 
     //    );
     //  }
 
-    public function canRequestMembership(): bool
-    {
-        return in_array(
-            $this->membership_state,
-            [MembershipState::UNDEFINED, MembershipState::REJECTED]
-        );
+  public function canRequestMembership(): bool
+  {
+    return in_array(
+      $this->membership_state,
+      [MembershipState::UNDEFINED, MembershipState::REJECTED]
+    );
+  }
+
+  public function canViewMembershipRequest(): bool
+  {
+    return $this->membership_state !== MembershipState::UNDEFINED;
+  }
+
+  public function isMembershipApprovalRespondeOld(): bool
+  {
+    $pending = $this->membership_state === MembershipState::PENDING;
+
+    return $this->membership_approval_reason && $pending;
+  }
+
+  public function isMemberEnabled(): bool
+  {
+    return $this->membership_state == MembershipState::APPROVED && $this->is_active && ! $this->is_blocked;
+  }
+
+  /**
+   * Spec 008 (FR-029/FR-030) bounce-handling stub.
+   *
+   * Returns false in v1: real bounce detection is deferred to a future spec
+   * per the Assumption in specs/008-notifications-job-alerts/spec.md. The
+   * `DispatchDecision::SuppressedInvalidRecipient` decision class and its
+   * `PublicEventKind::AlertEmailSuppressedInvalidRecipient` event exist as
+   * scaffolding so the eventual real implementation is a one-line method
+   * swap with no other code changes.
+   */
+  public function isEmailInvalid(): bool
+  {
+    return false;
+  }
+
+  public function hasPermission($uperm)
+  {
+    $perm = $this->role?->perm;
+    if (! $perm) {
+      return false;
     }
+    $allowed = in_array($uperm, $perm);
 
-    public function canViewMembershipRequest(): bool
-    {
-        return $this->membership_state !== MembershipState::UNDEFINED;
-    }
-
-    public function isMembershipApprovalRespondeOld(): bool
-    {
-        $pending = $this->membership_state === MembershipState::PENDING;
-
-        return $this->membership_approval_reason && $pending;
-    }
-
-    /**
-     * Spec 008 (FR-029/FR-030) bounce-handling stub.
-     *
-     * Returns false in v1: real bounce detection is deferred to a future spec
-     * per the Assumption in specs/008-notifications-job-alerts/spec.md. The
-     * `DispatchDecision::SuppressedInvalidRecipient` decision class and its
-     * `PublicEventKind::AlertEmailSuppressedInvalidRecipient` event exist as
-     * scaffolding so the eventual real implementation is a one-line method
-     * swap with no other code changes.
-     */
-    public function isEmailInvalid(): bool
-    {
-        return false;
-    }
-
-    public function hasPermission($uperm)
-    {
-        $perm = $this->role?->perm;
-        if (! $perm) {
-            return false;
-        }
-        $allowed = in_array($uperm, $perm);
-
-        // dd($allowed, $uperm, $perm);
-        return $allowed;
-    }
+    // dd($allowed, $uperm, $perm);
+    return $allowed;
+  }
 }
