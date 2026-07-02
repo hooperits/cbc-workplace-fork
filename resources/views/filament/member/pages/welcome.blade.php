@@ -13,32 +13,32 @@
 
             @if(! $member->hasVerifiedEmail())
                 <!-- Tarjeta de Confirmación de Correo Pendiente -->
-                <div class="rounded-xl border border-amber-200 bg-amber-50/50 p-6 dark:border-amber-800/30 dark:bg-amber-950/10">
+                <div class="rounded-xl border border-cyan-800/30 bg-slate-900/40 p-6 dark:border-cyan-700/40">
                     <div class="flex items-start gap-4">
-                        <div class="rounded-lg bg-amber-100 p-2 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400">
+                        <div class="rounded-lg bg-cyan-900/30 p-2 text-cyan-400">
                             <!-- Heroicon-o-envelope -->
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                             </svg>
                         </div>
                         <div class="flex-1 space-y-2 text-left">
-                            <h3 class="text-lg font-semibold text-amber-900 dark:text-amber-200">
+                            <h3 class="text-lg font-semibold text-slate-100">
                                 {{ __('Confirma tu correo electrónico') }}
                             </h3>
-                            <p class="text-sm text-amber-700 dark:text-amber-300">
+                            <p class="text-sm text-slate-300">
                                 {{ __('Para continuar y acceder al portal, debes verificar tu cuenta. Hemos enviado un correo de confirmación a:') }}
                             </p>
-                            <div class="inline-block px-3 py-1 bg-white dark:bg-gray-800 border border-amber-200 dark:border-gray-700 rounded-md font-mono text-sm font-semibold text-gray-850 dark:text-gray-200 select-all shadow-sm">
+                            <div class="inline-block px-3 py-1 bg-slate-800 border border-slate-700 rounded-md font-mono text-sm font-semibold text-slate-100 select-all shadow-sm">
                                 {{ $member->email }}
                             </div>
-                            <div class="text-xs text-amber-600 dark:text-amber-400 pt-2 space-y-1">
+                            <div class="text-xs text-slate-400 pt-2 space-y-1">
                                 <p>• {{ __('¿No lo encuentras? Revisa tu carpeta de correo no deseado (Spam).') }}</p>
                                 <p>• {{ __('El enlace expira en 60 minutos.') }}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-end border-t border-amber-200/50 dark:border-amber-800/20 pt-4">
+                    <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-end border-t border-slate-700 pt-4">
                         <x-filament::button
                             wire:click="resendVerification"
                             wire:loading.attr="disabled"
@@ -68,19 +68,19 @@
                 </div>
             @else
                 <!-- Tarjeta de Cuenta Verificada -->
-                <div class="rounded-xl border border-emerald-200 bg-emerald-50/50 p-6 dark:border-emerald-800/30 dark:bg-emerald-950/10">
+                <div class="rounded-xl border border-teal-800/30 bg-slate-900/40 p-6 dark:border-teal-700/40">
                     <div class="flex items-start gap-4">
-                        <div class="rounded-lg bg-emerald-100 p-2 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
+                        <div class="rounded-lg bg-teal-900/30 p-2 text-teal-400">
                             <!-- Heroicon-o-check-circle -->
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </div>
                         <div class="flex-1 space-y-1 text-left">
-                            <h3 class="text-lg font-semibold text-emerald-900 dark:text-emerald-200">
+                            <h3 class="text-lg font-semibold text-slate-100">
                                 {{ __('¡Cuenta verificada!') }}
                             </h3>
-                            <p class="text-sm text-emerald-700 dark:text-emerald-300">
+                            <p class="text-sm text-slate-300">
                                 {{ __('Tu dirección de correo ya ha sido confirmada con éxito. Ya puedes acceder al portal completo.') }}
                             </p>
                         </div>
