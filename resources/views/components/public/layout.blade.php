@@ -82,12 +82,12 @@
             <a href="{{ url('/') }}" class="brand-logo flex items-center hover:opacity-90 transition-opacity">
                 <img src="{{ asset('images/logo.png') }}" alt="Lazos de Fe" class="h-12 md:h-16 w-auto">
             </a>
-            <div class="flex items-center gap-8">
-                <nav aria-label="{{ __('Navegación principal') }}" class="text-sm flex gap-7 items-center">
-                    <a href="{{ url('/bolsa-de-trabajo') }}" class="text-slate-300 hover:text-cyan-400 font-medium transition-colors relative after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-cyan-400 hover:after:w-full after:transition-all">
+            <div class="flex items-center gap-10">
+                <nav aria-label="{{ __('Navegación principal') }}" class="text-sm flex gap-12 items-center">
+                    <a href="{{ url('/bolsa-de-trabajo') }}" class="text-slate-300 hover:text-cyan-400 font-medium transition-colors relative after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-cyan-400 hover:after:w-full after:transition-all">
                         {{ __('public.listing.title') }}
                     </a>
-                    <a href="{{ url('/app') }}" class="text-slate-300 hover:text-cyan-400 font-medium transition-colors relative after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-cyan-400 hover:after:w-full after:transition-all">
+                    <a href="{{ url('/app') }}" class="text-slate-300 hover:text-cyan-400 font-medium transition-colors relative after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-cyan-400 hover:after:w-full after:transition-all">
                         {{ __('Emprendimientos') }}
                     </a>
                 </nav>
