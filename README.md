@@ -22,16 +22,17 @@
 ## Tabla de Contenidos
 
 - [Características principales](#características-principales)
-- [Inicio rápido](#inicio-rápido)
+- [Instalación](#instalación)
+- [Desarrollo con Sail](#desarrollo-con-sail)
 - [Capturas y Demo](#capturas-y-demo)
 - [Stack tecnológico](#stack-tecnológico)
 - [Documentación](#documentación)
-- [Arquitectura](#arquitectura)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Desarrollo](#desarrollo)
-- [Pruebas](#pruebas)
+- [Arquitectura (resumen)](#arquitectura-resumen)
+- [Estructura del proyecto (resumen)](#estructura-del-proyecto-resumen)
+- [Testing](#testing)
 - [Comandos útiles](#comandos-útiles)
-- [Despliegue](#despliegue)
+- [Estado del proyecto](#estado-del-proyecto)
+- [Despliegue en producción](#despliegue-en-producción)
 - [Contribuir](#contribuir)
 - [Licencia](#licencia)
 
@@ -53,49 +54,156 @@
 
 ---
 
-## Inicio rápido
+## Instalación
 
 ### Requisitos
-- Docker + Docker Compose
-- Git
+- **Docker** + **Docker Compose** (v2+)
+- **Git**
+- (Opcional pero útil) PHP 8.3+ y Composer en el host para la primera instalación de dependencias
 
-Todo se ejecuta dentro de contenedores.
+### Pasos
 
 ```bash
+# 1. Clonar el repositorio
 git clone <url-del-repositorio> cbc-workplace
 cd cbc-workplace
 
-# Instalar dependencias PHP
-docker run --rm -v "$(pwd):/app" -w /app composer:latest composer install --ignore-platform-reqs
-
-# Entorno
+# 2. Copiar variables de entorno
 cp .env.example .env
 
-# Levantar
+# 3. Instalar dependencias de PHP
+# Opción recomendada (con PHP local):
+composer install --ignore-platform-reqs
+
+# Alternativa (sin PHP local):
+# docker run --rm -v "$(pwd):/app" -w /app composer:latest composer install --ignore-platform-reqs
+
+# 4. Levantar los contenedores
 docker compose build
 docker compose up -d
 
-# Config inicial
-docker compose exec app php artisan key:generate
-docker compose exec app php artisan migrate --seed
+# 5. (Muy recomendado) Configurar el alias de Sail
+# Añade esta línea a tu ~/.bashrc o ~/.zshrc:
+# alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+#
+# Luego recarga tu terminal:
+# source ~/.zshrc   # o source ~/.bashrc
 
-# Permisos
+# 6. Configuración inicial
+sail artisan key:generate
+sail artisan migrate --seed
+
+# 7. Permisos de almacenamiento
 docker compose exec app chown -R sail:sail /var/www/html/storage /var/www/html/bootstrap/cache
 ```
 
-**Assets frontend** (Tailwind/Vite):
+### Assets frontend (Tailwind + Vite)
+
 ```bash
-docker compose exec app npm install
-docker compose exec app npm run dev     # HMR
-# o npm run build para producción
+sail npm install
+sail npm run dev     # Modo desarrollo con hot reload (http://localhost:5173)
+# o
+sail npm run build   # Build para producción
 ```
 
-Accesos principales:
-- Pública / Bolsa → http://localhost y http://localhost/bolsa-de-trabajo
-- Admin → http://localhost/admin
-- Member → http://localhost/member
-- Mailpit → http://localhost:8025
-- phpMyAdmin → http://localhost:8000
+### Accesos
+
+| Servicio          | URL                        |
+|-------------------|----------------------------|
+| App principal     | http://localhost           |
+| Bolsa de Trabajo  | http://localhost/bolsa-de-trabajo |
+| Panel Admin       | http://localhost/admin     |
+| Panel Member      | http://localhost/member    |
+| Mailpit (emails)  | http://localhost:8025      |
+| phpMyAdmin        | http://localhost:8000      |
+
+> **Nota:** El primer `docker compose up -d` puede tardar 5-10 minutos mientras descarga las imágenes de Sail.
+
+---
+
+## Desarrollo con Sail
+
+Laravel Sail es la forma recomendada de trabajar en este proyecto. Una vez que los contenedores están levantados (`docker compose up -d` o `sail up -d`), todos los comandos de desarrollo se ejecutan **dentro del contenedor** usando el wrapper `sail`.
+
+### Alias recomendado
+
+Añade esto a tu `~/.bashrc` o `~/.zshrc`:
+
+```bash
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+```
+
+Recarga la terminal:
+
+```bash
+source ~/.zshrc   # o source ~/.bashrc
+```
+
+Ahora puedes usar atajos muy cómodos:
+
+```bash
+sail up -d                    # Levantar en segundo plano
+sail down                     # Detener
+sail ps                       # Ver estado de contenedores
+sail artisan ...              # Cualquier comando artisan
+sail npm run dev              # Frontend en modo desarrollo
+sail npm run build            # Build de producción
+sail tinker                   # REPL de Laravel
+sail shell                    # Entrar a la shell del contenedor (bash)
+```
+
+### Comandos frecuentes de desarrollo
+
+```bash
+# Base de datos
+sail artisan migrate
+sail artisan migrate:fresh --seed
+sail artisan db:seed --class=JobCategorySeeder
+
+# Frontend
+sail npm run dev
+sail npm run build
+
+# Testing
+sail artisan test
+sail artisan pest --parallel
+
+# Colas y scheduler (desarrollo)
+sail artisan queue:listen
+sail artisan schedule:work
+
+# Utilidades
+sail artisan tinker
+sail artisan optimize:clear
+sail artisan config:cache
+```
+
+### Ejecutar comandos directamente en el contenedor
+
+Si necesitas algo más específico:
+
+```bash
+sail exec app php artisan ...
+sail exec app bash                 # o sh
+sail exec app composer require ...
+```
+
+### Diferencias con docker compose puro
+
+| Acción                    | Con Sail (recomendado)       | Con docker compose puro                  |
+|---------------------------|------------------------------|------------------------------------------|
+| Levantar                  | `sail up -d`                 | `docker compose up -d`                   |
+| Artisan                   | `sail artisan migrate`       | `docker compose exec app php artisan migrate` |
+| npm                       | `sail npm run dev`           | `docker compose exec app npm run dev`    |
+| Entrar al contenedor      | `sail shell`                 | `docker compose exec app bash`           |
+| Logs                      | `sail logs -f app`           | `docker compose logs -f app`             |
+
+### Notas importantes
+
+- `sail` siempre ejecuta los comandos dentro del contenedor `app`.
+- El contenedor ya tiene PHP, Composer, Node y todas las dependencias instaladas.
+- No es necesario tener PHP o Node instalados en tu máquina local (aunque ayuda para la primera instalación de Composer).
+- Para producción se usa `docker-compose.prod.yml` (sin Sail).
 
 ---
 
@@ -273,29 +381,9 @@ BOLSA DE TRABAJO  (construida sobre la misma infra compartida)
 
 ---
 
-## Prerequisitos
+> La información detallada de instalación se encuentra en la sección **Instalación** más arriba.
 
-- **Docker** y **Docker Compose** instalados
-- **Git** para clonar el repositorio
-
-> No se necesita instalar PHP, Composer ni Node.js localmente — todo se ejecuta dentro de los contenedores.
-
----
-
-## Instalación y configuración
-
-### 1. Clonar el repositorio
-
-```bash
-git clone <url-del-repositorio> cbc-workplace
-cd cbc-workplace
-```
-
-> Ver la sección **Inicio rápido** más arriba para los pasos actualizados. La información detallada antigua de instalación ha sido simplificada para reducir duplicación.
-
----
-
-## Estructura del proyecto
+## Estructura del proyecto (detallada)
 
 ```
 app/
@@ -1104,12 +1192,18 @@ Framework: **Pest 2.34** + PHPUnit base.
   - `tests/Feature/Admin/` — panel admin (resources, widgets, actions).
   - `tests/Feature/Alerts/` — pipeline de alertas (dispatch, dedup, race conditions, 60 s grace).
 
-Ejecución:
+Ejecución (recomendado con Sail):
+
+```bash
+sail artisan test
+sail artisan test --filter=OrganizationIsSuspendedTest
+sail artisan pest --parallel
+```
+
+O usando la forma larga:
 
 ```bash
 docker compose exec app php artisan test
-docker compose exec app php artisan test --filter=OrganizationIsSuspendedTest
-docker compose exec app vendor/bin/pest --parallel
 ```
 
 Coverage objetivo: 80%+. Toda transición de estado (state machines) **debe** tener test feature.
@@ -1118,34 +1212,67 @@ Coverage objetivo: 80%+. Toda transición de estado (state machines) **debe** te
 
 ## Comandos útiles
 
+> **Recomendado:** Una vez que tengas configurado el alias de Sail (ver más arriba), usa `sail artisan ...` en lugar de los comandos largos de `docker compose exec`.
+
 ```bash
 # Migraciones
-docker compose exec app php artisan migrate
-docker compose exec app php artisan migrate:fresh --seed
+sail artisan migrate
+sail artisan migrate:fresh --seed
 
 # Seeders específicos
-docker compose exec app php artisan db:seed --class=JobCategorySeeder
+sail artisan db:seed --class=JobCategorySeeder
 
 # Sitemap manual
-docker compose exec app php artisan app:generate-sitemap
+sail artisan app:generate-sitemap
 
 # Alertas (dispatcher manual)
-docker compose exec app php artisan alerts:dispatch-daily
-docker compose exec app php artisan alerts:dispatch-weekly
+sail artisan alerts:dispatch-daily
+sail artisan alerts:dispatch-weekly
 
 # Scheduler en foreground (dev)
-docker compose exec app php artisan schedule:work
+sail artisan schedule:work
 
 # Queue worker (dev)
-docker compose exec app php artisan queue:listen
+sail artisan queue:listen
 
 # Tinker
-docker compose exec app php artisan tinker
+sail artisan tinker
 
-# Limpieza
-docker compose exec app php artisan optimize:clear
-docker compose exec app php artisan config:cache  # producción
+# Limpieza y cache
+sail artisan optimize:clear
+sail artisan config:cache     # producción
+sail artisan route:cache
+sail artisan view:cache
+
+# Equivalentes con docker compose (sin alias)
+# docker compose exec app php artisan migrate --seed
 ```
+
+### Configurar el alias de Sail (recomendado)
+
+Para evitar escribir comandos largos como `docker compose exec app php artisan`, añade esto a tu `~/.bashrc` o `~/.zshrc`:
+
+```bash
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+```
+
+Recarga tu terminal:
+
+```bash
+source ~/.zshrc   # o source ~/.bashrc
+```
+
+A partir de ahora usa:
+
+```bash
+sail up -d
+sail artisan migrate --seed
+sail artisan tinker
+sail npm run dev
+sail artisan test
+```
+
+Este alias es el método oficial y más usado en proyectos con Laravel Sail.
 
 ---
 
@@ -1179,6 +1306,8 @@ Pasos:
 2. Activar `OPCache` y `config:cache`/`route:cache`/`view:cache`.
 3. Levantar workers de queue con un supervisor (recomendado: `php artisan horizon` si se incorpora) o `queue:work` con systemd.
 4. Configurar cron en el host: `* * * * * php artisan schedule:run >> /dev/null 2>&1`.
+
+> Nota: En producción normalmente ejecutas estos comandos dentro del contenedor de la aplicación (no con el alias `sail`, que es solo para desarrollo).
 5. Verificar permisos: `storage/`, `bootstrap/cache/` writable por `www-data`.
 6. Backup diario de DB + carpeta `storage/app/public/` (contiene CV snapshots).
 
@@ -1193,7 +1322,7 @@ Health checks:
 ## Contribuir
 
 - Levanta el entorno con Docker.
-- Ejecuta los tests (`pest` o `php artisan test`).
+- Ejecuta los tests (`sail artisan test` o `sail artisan pest --parallel`).
 - Sigue las convenciones (Actions por contexto, Policies, snapshots).
 - Para frontend usa `npm run dev` / `npm run build`.
 

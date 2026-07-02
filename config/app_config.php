@@ -26,4 +26,11 @@ return [
         'max' => 3,
     ],
     'invitationCodeRequiredForRegistration' => false,
+
+    // Editable content types (used by TextResource)
+    'textTypes' => [
+        'ui'        => 'UI / Contenido Público',
+        'mail'      => 'Plantillas de Correo',
+        'versiculo' => 'Versículo de Inspiración',
+    ],
 ];

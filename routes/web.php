@@ -1,5 +1,9 @@
 <?php
 
+use App\Enums\VentureApprovalState;
+use App\Models\Faq;
+use App\Models\JobListing;
+use App\Models\Venture;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +18,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-  return view('welcome');
+    $venturesCount = Venture::active()
+        ->where('approval_state', VentureApprovalState::APPROVED)
+        ->where('is_expired', 0)
+        ->whereHas('member', fn ($q) => $q->where('is_active', true))
+        ->count();
+
+    $jobsCount = JobListing::active()->count();
+
+    $faqs = Faq::active()->ordered()->get();
+
+    return view('welcome', [
+        'venturesCount' => $venturesCount,
+        'jobsCount'     => $jobsCount,
+        'faqs'          => $faqs,
+    ]);
 });
 Route::get('/member/tos', App\Filament\Member\Pages\Tos::class)
     ->name('member-tos');
