@@ -48,7 +48,7 @@ class VentureResource extends Resource
                     ->collapsed()
                     ->columns(2)
                     ->extraAttributes([
-                        'style' => 'background-color: #ced4da; color: #fff;',
+                        'class' => 'bg-slate-900/40 border border-slate-800/80 rounded-2xl',
                     ])
                     ->schema([
                         Infolists\Components\ViewEntry::make('status')
@@ -147,6 +147,10 @@ class VentureResource extends Resource
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->contentGrid([
+                'md' => 2,
+                'lg' => 3,
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('models/venture.fields.title'))

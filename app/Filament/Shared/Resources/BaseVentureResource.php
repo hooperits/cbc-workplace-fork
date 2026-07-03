@@ -54,6 +54,7 @@ class BaseVentureResource extends Resource
                       Infolists\Components\Section::make()
                           ->hidden(Util::isPanelActive('venture'))
                           ->columns(2)
+                          ->extraAttributes(['class' => 'bg-slate-900/40 border border-slate-800/80 rounded-2xl'])
                           ->schema([
                             Infolists\Components\TextEntry::make('title')
                                 ->label(__('models/venture.fields.title'))
@@ -116,6 +117,7 @@ class BaseVentureResource extends Resource
                 Infolists\Components\Section::make(__('models/venture.resource.sections.approval.label'))
                     ->hidden(fn () => Util::isPanelActive('venture'))
                     ->columnSpan(['md' => 1, 'lg' => 1])
+                    ->extraAttributes(['class' => 'bg-slate-900/40 border border-slate-800/80 rounded-2xl'])
                     ->description(fn (Venture $record) => match ($record->approval_state) {
                       VentureApprovalState::APPROVAL => __('models/venture.resource.sections.approval.description.waiting'),
                       VentureApprovalState::APPROVED, VentureApprovalState::REJECTED => __('models/venture.resource.sections.approval.description.returned'),
@@ -242,6 +244,10 @@ class BaseVentureResource extends Resource
   {
     return $table
         ->defaultSort('created_at', 'desc')
+        ->contentGrid([
+            'md' => 2,
+            'lg' => 3,
+        ])
         ->columns([
           Tables\Columns\TextColumn::make('id')
               ->label(__('common.fields.id')),
