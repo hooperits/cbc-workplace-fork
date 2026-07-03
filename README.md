@@ -21,47 +21,219 @@
 
 ## Tabla de Contenidos
 
-- [Resumen ejecutivo](#resumen-ejecutivo)
-- [Arquitectura general](#arquitectura-general)
+- [Características principales](#características-principales)
+- [Instalación](#instalación)
+- [Desarrollo con Sail](#desarrollo-con-sail)
+- [Capturas y Demo](#capturas-y-demo)
 - [Stack tecnológico](#stack-tecnológico)
-- [Prerequisitos](#prerequisitos)
-- [Instalación y configuración](#instalación-y-configuración)
-- [Servicios Docker](#servicios-docker)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Núcleo (CORE)](#núcleo-core)
-  - [Paneles Filament](#paneles-filament)
-  - [Autenticación y autorización](#autenticación-y-autorización)
-  - [Capa de Actions](#capa-de-actions)
-  - [Mailables y notificaciones](#mailables-y-notificaciones)
-  - [Console y Scheduler](#console-y-scheduler)
-  - [Middleware compartido](#middleware-compartido)
-  - [Helpers y macros](#helpers-y-macros)
-- [Infraestructura compartida entre módulos](#infraestructura-compartida-entre-módulos)
-- [Módulo Emprendimientos (Lazos de Fe)](#módulo-emprendimientos-lazos-de-fe)
-- [Módulo Bolsa de Trabajo](#módulo-bolsa-de-trabajo)
-  - [Spec 002 — Categorías](#spec-002--categorías)
-  - [Spec 003 — Organizaciones y verificación](#spec-003--organizaciones-y-verificación)
-  - [Spec 004 — Perfil de candidato](#spec-004--perfil-de-candidato)
-  - [Spec 005 — Ofertas de empleo](#spec-005--ofertas-de-empleo)
-  - [Spec 006 — Postulaciones](#spec-006--postulaciones)
-  - [Spec 007 — Búsqueda pública](#spec-007--búsqueda-pública)
-  - [Spec 008 — Alertas de empleo](#spec-008--alertas-de-empleo)
-  - [Spec 009 — Dashboard admin + suspensión](#spec-009--dashboard-admin--suspensión)
-- [Convenciones del codebase](#convenciones-del-codebase)
-- [Cross-cutting concerns](#cross-cutting-concerns)
+- [Documentación](#documentación)
+- [Arquitectura (resumen)](#arquitectura-resumen)
+- [Estructura del proyecto (resumen)](#estructura-del-proyecto-resumen)
 - [Testing](#testing)
 - [Comandos útiles](#comandos-útiles)
 - [Estado del proyecto](#estado-del-proyecto)
 - [Despliegue en producción](#despliegue-en-producción)
+- [Contribuir](#contribuir)
+- [Licencia](#licencia)
 
 ---
 
-## Resumen ejecutivo
+## Características principales
 
-**cbc-workplace** es una aplicación Laravel 11 + Filament 3.3 de **Crossroads Bible Church (CBC)** que aloja **dos productos distintos** sobre una misma plataforma e infraestructura:
+**cbc-workplace** es una plataforma dual de **Crossroads Bible Church (CBC)**:
 
-1. **Lazos de Fe (Emprendimientos)** — módulo original. Comunidad basada en fe donde miembros publican "emprendimientos" (proyectos / ideas de negocio) que pasan por un flujo de aprobación administrativo. Incluye sistema de patrocinio por invitación (UUID + expiración 3 días), favoritos con calificación, comentarios polimórficos y exposición pública de los emprendimientos aprobados.
-2. **Bolsa de Trabajo** — módulo nuevo, construido en 8 specs incrementales (002-009). Conecta candidatos (con perfil profesional y CV) con organizaciones empleadoras previamente verificadas. Incluye listado público sin sesión, búsqueda insensible a acentos, alertas opt-in en tres frecuencias y dashboard administrativo.
+- **Lazos de Fe (Emprendimientos)**: Publicación y curaduría de emprendimientos con flujo de aprobación, sistema de patrocinio (invitación de 3 días), favoritos con valoración y comentarios polimórficos.
+- **Bolsa de Trabajo**: Conecta candidatos verificados con organizaciones empleadoras. Incluye listado público anónimo, búsqueda insensible a acentos, filtros avanzados, alertas (instantáneas/diarias/semanales), postulación con snapshots inmutables y paneles administrativos completos.
+
+**Puntos destacados**:
+- Tres paneles Filament: Admin (/admin), Member (/member) y App público (/).
+- Infraestructura compartida: Member (autenticable), Category con scopes dobles, Comments/Media polimórficos, sistema de permisos basado en arrays.
+- Capa pública sin sesión (cacheable) para la bolsa de trabajo + SEO (JSON-LD, OG, sitemap, canonical/noindex).
+- Actions como única capa de lógica de negocio.
+- Estados explícitos con enums + scheduler defensivo.
+
+---
+
+## Instalación
+
+### Requisitos
+- **Docker** + **Docker Compose** (v2+)
+- **Git**
+- (Opcional pero útil) PHP 8.3+ y Composer en el host para la primera instalación de dependencias
+
+### Pasos
+
+```bash
+# 1. Clonar el repositorio
+git clone <url-del-repositorio> cbc-workplace
+cd cbc-workplace
+
+# 2. Copiar variables de entorno
+cp .env.example .env
+
+# 3. Instalar dependencias de PHP
+# Opción recomendada (con PHP local):
+composer install --ignore-platform-reqs
+
+# Alternativa (sin PHP local):
+# docker run --rm -v "$(pwd):/app" -w /app composer:latest composer install --ignore-platform-reqs
+
+# 4. Levantar los contenedores
+docker compose build
+docker compose up -d
+
+# 5. (Muy recomendado) Configurar el alias de Sail
+# Añade esta línea a tu ~/.bashrc o ~/.zshrc:
+# alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+#
+# Luego recarga tu terminal:
+# source ~/.zshrc   # o source ~/.bashrc
+
+# 6. Configuración inicial
+sail artisan key:generate
+sail artisan migrate --seed
+
+# 7. Permisos de almacenamiento
+docker compose exec app chown -R sail:sail /var/www/html/storage /var/www/html/bootstrap/cache
+```
+
+### Assets frontend (Tailwind + Vite)
+
+```bash
+sail npm install
+sail npm run dev     # Modo desarrollo con hot reload (http://localhost:5173)
+# o
+sail npm run build   # Build para producción
+```
+
+### Accesos
+
+| Servicio          | URL                        |
+|-------------------|----------------------------|
+| App principal     | http://localhost           |
+| Bolsa de Trabajo  | http://localhost/bolsa-de-trabajo |
+| Panel Admin       | http://localhost/admin     |
+| Panel Member      | http://localhost/member    |
+| Mailpit (emails)  | http://localhost:8025      |
+| phpMyAdmin        | http://localhost:8000      |
+
+> **Nota:** El primer `docker compose up -d` puede tardar 5-10 minutos mientras descarga las imágenes de Sail.
+
+---
+
+## Desarrollo con Sail
+
+Laravel Sail es la forma recomendada de trabajar en este proyecto. Una vez que los contenedores están levantados (`docker compose up -d` o `sail up -d`), todos los comandos de desarrollo se ejecutan **dentro del contenedor** usando el wrapper `sail`.
+
+### Alias recomendado
+
+Añade esto a tu `~/.bashrc` o `~/.zshrc`:
+
+```bash
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+```
+
+Recarga la terminal:
+
+```bash
+source ~/.zshrc   # o source ~/.bashrc
+```
+
+Ahora puedes usar atajos muy cómodos:
+
+```bash
+sail up -d                    # Levantar en segundo plano
+sail down                     # Detener
+sail ps                       # Ver estado de contenedores
+sail artisan ...              # Cualquier comando artisan
+sail npm run dev              # Frontend en modo desarrollo
+sail npm run build            # Build de producción
+sail tinker                   # REPL de Laravel
+sail shell                    # Entrar a la shell del contenedor (bash)
+```
+
+### Comandos frecuentes de desarrollo
+
+```bash
+# Base de datos
+sail artisan migrate
+sail artisan migrate:fresh --seed
+sail artisan db:seed --class=JobCategorySeeder
+
+# Frontend
+sail npm run dev
+sail npm run build
+
+# Testing
+sail artisan test
+sail artisan pest --parallel
+
+# Colas y scheduler (desarrollo)
+sail artisan queue:listen
+sail artisan schedule:work
+
+# Utilidades
+sail artisan tinker
+sail artisan optimize:clear
+sail artisan config:cache
+```
+
+### Ejecutar comandos directamente en el contenedor
+
+Si necesitas algo más específico:
+
+```bash
+sail exec app php artisan ...
+sail exec app bash                 # o sh
+sail exec app composer require ...
+```
+
+### Diferencias con docker compose puro
+
+| Acción                    | Con Sail (recomendado)       | Con docker compose puro                  |
+|---------------------------|------------------------------|------------------------------------------|
+| Levantar                  | `sail up -d`                 | `docker compose up -d`                   |
+| Artisan                   | `sail artisan migrate`       | `docker compose exec app php artisan migrate` |
+| npm                       | `sail npm run dev`           | `docker compose exec app npm run dev`    |
+| Entrar al contenedor      | `sail shell`                 | `docker compose exec app bash`           |
+| Logs                      | `sail logs -f app`           | `docker compose logs -f app`             |
+
+### Notas importantes
+
+- `sail` siempre ejecuta los comandos dentro del contenedor `app`.
+- El contenedor ya tiene PHP, Composer, Node y todas las dependencias instaladas.
+- No es necesario tener PHP o Node instalados en tu máquina local (aunque ayuda para la primera instalación de Composer).
+- Para producción se usa `docker-compose.prod.yml` (sin Sail).
+
+---
+
+## Capturas y Demo
+
+Galería visual extensa disponible:
+
+- `public/screenshots/` (job board, detalle de oferta, estados vacíos, CTAs, landing).
+- Inventario completo + guías visuales: [docs/guides/00-screenshot-inventory.md](docs/guides/00-screenshot-inventory.md).
+- Diagramas de arquitectura: `docs/guides/diagrams/`.
+
+Ver también las carpetas `docs/guides/user/`, `admin/` e `impl/` para capturas de pantallas y flujos completos.
+
+---
+
+## Stack tecnológico
+
+| Tecnología       | Versión     | Propósito                          |
+|------------------|-------------|------------------------------------|
+| PHP              | ^8.3        | Runtime                            |
+| Laravel          | ^11.0       | Framework backend                  |
+| Filament         | ^3.3        | Paneles (admin / member / app)     |
+| MySQL / MariaDB  | 8.0 / jammy | Base de datos                      |
+| Tailwind CSS     | ^3.4        | Estilos                            |
+| Vite             | ^4.0        | Bundler de assets                  |
+| Laravel Sail     | ^1.25       | Entorno Docker desarrollo          |
+| Pest             | ^2.34       | Pruebas                            |
+| Caddy            | 2.10        | Proxy + HTTPS en producción        |
+
+**Dependencias destacadas**: lorisleiva/laravel-actions, spatie/laravel-activitylog + sitemap, varios plugins de Filament.
 
 Ambos productos comparten **una misma capa de infraestructura**: el modelo `Member` (authenticatable del guard `member`), el modelo `Category` con doble scope (`Venture` | `JobListing`), `Comments` polimórfico (presente en Venture, Member, Organization, JobListing, Application, JobAlert), `Media` polimórfico, sistema de roles + permisos (`Role.perm` array consumido por `BasePolicy`), contenido editable (`Text`, `Config`), helpers (`Util`, `AppMacros`), middleware (`SecurityHeaders`) y layouts/componentes Blade reutilizados en ambas superficies públicas.
 
@@ -73,87 +245,55 @@ Ambos productos comparten **una misma capa de infraestructura**: el modelo `Memb
 
 Tres principios cross-cutting sostienen la arquitectura:
 
-1. **Curaduría administrativa** explícita en ambos productos: las organizaciones pasan por verificación ([app/Enums/OrganizationVerificationState.php](app/Enums/OrganizationVerificationState.php)), los emprendimientos pasan por aprobación ([app/Enums/VentureApprovalState.php](app/Enums/VentureApprovalState.php)). Suspensión de organizaciones **ortogonal** al estado de verificación ([app/Models/Organization.php#L63-L66](app/Models/Organization.php#L63-L66)).
-2. **Capa de Actions** ([lorisleiva/laravel-actions](https://github.com/lorisleiva/laravel-actions)) encapsula toda transición de estado + efectos colaterales en clases mono-propósito reutilizables desde controllers, Filament o jobs.
-3. **Scheduler defensivo** con `withoutOverlapping()` + `onOneServer()` para sitemap horario, digests diario/semanal de alertas y expiración de listings.
+> **Nota**: El contenido técnico profundo (arquitectura detallada, grafo de specs, modelos completos, cross-cutting concerns, etc.) ha sido condensado. Consulta la documentación completa en `docs/guides/impl/` y las specs en `specs_bolsa_de_trabajo/`.
 
 ---
 
-## Arquitectura general
+## Documentación
+
+- Specs de implementación (Bolsa de Trabajo): [specs_bolsa_de_trabajo/](specs_bolsa_de_trabajo/) (002–009).
+- Guías de usuario, administrador e implementación: `docs/guides/`.
+- Inventario de capturas y diagramas: `docs/guides/00-screenshot-inventory.md` y `diagrams/`.
+
+---
+
+## Arquitectura (resumen)
+
+Dos productos sobre infraestructura compartida.
+
+**Capa pública** (sin sesión obligatoria, cacheable) → **Paneles Filament** (admin / member / app) → **Capa de Actions** → Eloquent + Policies.
+
+Componentes compartidos principales:
+- `Member` (autenticable)
+- `Category` con `scope`
+- `Comments` y `Media` polimórficos
+- Sistema de roles/permisos basado en array
+- Middleware de seguridad y cache público
+
+Ver detalles completos en `docs/guides/impl/01-arquitectura.md` y `05-modelos-y-relaciones.md`.
+
+---
+
+## Estructura del proyecto (resumen)
 
 ```
-+-----------------------------------------------------------------------+
-|                   CAPA PUBLICA (sin sesion)                           |
-|  GET /                          GET /bolsa-de-trabajo                 |
-|  (panel Venture default)        JobBoardController                    |
-|  emprendimientos aprobados      (throttle 60/min si q)                |
-|                                 GET /bolsa-de-trabajo/{slug}          |
-|                                 JobOfferController (200/410/404)      |
-|                                 GET /sitemap.xml -> SitemapController |
-|  Middleware: SecurityHeaders, PublicNoSessionCookie                   |
-+-----------------------+-----------------------------------------------+
-                        |
-+-----------------------+-----------------------------------------------+
-|                    PANELES FILAMENT                                   |
-|  +------------------+   +-------------------+   +------------------+  |
-|  | Admin /admin     |   | Member /member    |   | App  /  (default)|  |
-|  | guard: admin     |   | guard: member     |   | id: 'app'        |  |
-|  | NavGroups:       |   | Recursos:         |   | authMiddleware:[]|  |
-|  | - Sistema        |   | - CandidateProfile|   | nav: Inicio,     |  |
-|  | - Administracion |   | - Organization    |   |      Mis Favs    |  |
-|  | - Bolsa de Trab. |   | - JobListing      |   | Resources:       |  |
-|  | - Emprendimientos|   | - JobAlert        |   |   VentureResource|  |
-|  | 4 widgets dash   |   | - Application     |   |   (publico/list) |  |
-|  | suspend banner   |   | - Favorite        |   |                  |  |
-|  +--------+---------+   +---------+---------+   +--------+---------+  |
-+-----------+-----------------------+----------------------+------------+
-            |                       |                      |
-+-----------v-----------------------v----------------------v------------+
-|             AUTH / AUTHORIZATION                                      |
-|  guard 'admin' -> User + Role.perm[]                                  |
-|  guard 'member' -> Member (Authenticatable, MustVerifyEmail)          |
-|  Policies extend BasePolicy (admin bypass via before())               |
-|  Member.hasPermission() -> Role.perm[] (compartido)                   |
-+-----------------------------------+-----------------------------------+
-                                    |
-+-----------------------------------v-----------------------------------+
-|        CAPA DE ACTIONS  (lorisleiva/laravel-actions)                  |
-|                                                                       |
-|  EMPRENDIMIENTOS                  BOLSA DE TRABAJO                    |
-|  --------------                   ----------------                    |
-|  Sponsor                          Admin/                              |
-|  Admin/                             OrganizationVerification          |
-|    VentureApproval                  SuspendOrganization               |
-|    MarkVentureAsExpired             ReactivateOrganization            |
-|    VentureToggleActive              JobListingApproval                |
-|  Member/                            AnonymizeMemberApplications       |
-|    RequestVentureApproval         Member/                             |
-|                                     RequestOrganizationVerification   |
-|                                     RequestJobListingApproval         |
-|                                     CloseJobListing, SubmitApplic.    |
-|                                   Public/                             |
-|                                     GenerateSitemapAction             |
-|                                     SearchPublicOffersAction          |
-|                                   Alerts/                             |
-|                                     CoalesceInstantMatchAction        |
-|                                     DispatchInstantAlertAction        |
-|                                     BuildDigestForAlertAction         |
-|                                     Dispatch{Daily,Weekly}DigestAct.  |
-|                                   Raiz/ ExpireJobListings             |
-+-----------------------------------+-----------------------------------+
-                                    |
-+-----------------------------------v-----------------------------------+
-|                  CAPA ELOQUENT (LogsActivity)                         |
-|                                                                       |
-|  COMPARTIDO                                                           |
-|  Member (Authenticatable, guard 'member')                             |
-|    +-- ventures()  HasMany Venture       (EMPRENDIMIENTOS)            |
-|    +-- organization() HasOne Organization (BOLSA)                     |
-|    +-- candidateProfile() HasOne CandidateProfile (BOLSA)             |
-|    +-- favorites() HasMany Favorite      (EMPRENDIMIENTOS)            |
-|    +-- comments() MorphMany Comments                                  |
-|    +-- invitation() / sponsor() Invitation                            |
-|                                                                       |
+cbc-workplace/
+├── app/
+│   ├── Actions/ (Admin | Member | Public | Alerts)
+│   ├── Filament/ (Admin | Member | Venture + Shared)
+│   ├── Models/ (Member, Venture, JobListing, Organization...)
+│   └── ...
+├── docs/guides/          # Guías completas
+├── public/screenshots/   # Galería visual
+├── resources/views/components/public/
+├── routes/public.php     # Bolsa anónima
+├── specs_bolsa_de_trabajo/
+└── tests/
+```
+
+Ver árbol detallado en la documentación de implementación.
+
+---|                                                                       |
 |  Category (scope: 'Venture' | 'JobListing', parent_id)                |
 |  Comments (polymorfico: Venture|Member|Org|JobListing|App|JobAlert)   |
 |  Media (polymorfico, disk='files'); Attachment (Member only)          |
@@ -241,117 +381,9 @@ BOLSA DE TRABAJO  (construida sobre la misma infra compartida)
 
 ---
 
-## Prerequisitos
+> La información detallada de instalación se encuentra en la sección **Instalación** más arriba.
 
-- **Docker** y **Docker Compose** instalados
-- **Git** para clonar el repositorio
-
-> No se necesita instalar PHP, Composer ni Node.js localmente — todo se ejecuta dentro de los contenedores.
-
----
-
-## Instalación y configuración
-
-### 1. Clonar el repositorio
-
-```bash
-git clone <url-del-repositorio> cbc-workplace
-cd cbc-workplace
-```
-
-### 2. Instalar dependencias de Composer
-
-```bash
-docker run --rm -v "$(pwd):/app" -w /app composer:latest composer install --ignore-platform-reqs
-```
-
-### 3. Configurar el entorno
-
-```bash
-cp .env.example .env
-```
-
-Variables mínimas:
-
-```env
-APP_NAME="Lazos de Fe"
-APP_ENV=local
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://localhost
-
-DB_CONNECTION=mysql
-DB_HOST=mysql
-DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=sail
-DB_PASSWORD=password
-
-MAIL_MAILER=smtp
-MAIL_HOST=mailpit
-MAIL_PORT=1025
-
-QUEUE_CONNECTION=database
-
-WWWGROUP=1000
-WWWUSER=1000
-```
-
-### 4. Construir y levantar contenedores
-
-```bash
-docker compose build
-docker compose up -d
-```
-
-### 5. Generar la clave de la aplicación
-
-```bash
-docker compose exec app php artisan key:generate
-```
-
-### 6. Ejecutar migraciones y seeders
-
-```bash
-docker compose exec app php artisan migrate --seed
-```
-
-Esto crea las tablas y ejecuta los seeders iniciales (`RoleSeeder`, `UserSeeder`, `ConfigSeeder`, `JobCategorySeeder`).
-
-### 7. Corregir permisos de almacenamiento
-
-```bash
-docker compose exec app chown -R sail:sail /var/www/html/storage /var/www/html/bootstrap/cache
-```
-
-### 8. Verificar la instalación
-
-- Frontend público: <http://localhost/bolsa-de-trabajo>
-- Panel admin: <http://localhost/admin>
-- Panel member: <http://localhost/member>
-- Mailpit (correos en dev): <http://localhost:8025>
-- phpMyAdmin: <http://localhost:8000>
-
----
-
-## Servicios Docker
-
-### Desarrollo (`docker-compose.yml`)
-
-| Servicio | Contenedor | Puerto(s) | Descripción |
-|----------|------------|-----------|-------------|
-| App | app-lazosdefe | 80, 5173 | Aplicación Laravel con PHP 8.4 (Sail) |
-| MySQL | mysql-lazosdefe | 3306 | Base de datos MySQL 8.0 |
-| Mailpit | mailpit-lazosdefe | 1025 (SMTP), 8025 (UI) | Captura de correos en desarrollo |
-| phpMyAdmin | phpmyadmin-lazosdefe | 8000 | Interfaz web para la base de datos |
-
-### Producción (`docker-compose.prod.yml`)
-
-Usa Caddy 2.10 como reverse proxy con HTTPS automático y MariaDB jammy.
-
----
-
-## Estructura del proyecto
+## Estructura del proyecto (detallada)
 
 ```
 app/
@@ -1160,12 +1192,18 @@ Framework: **Pest 2.34** + PHPUnit base.
   - `tests/Feature/Admin/` — panel admin (resources, widgets, actions).
   - `tests/Feature/Alerts/` — pipeline de alertas (dispatch, dedup, race conditions, 60 s grace).
 
-Ejecución:
+Ejecución (recomendado con Sail):
+
+```bash
+sail artisan test
+sail artisan test --filter=OrganizationIsSuspendedTest
+sail artisan pest --parallel
+```
+
+O usando la forma larga:
 
 ```bash
 docker compose exec app php artisan test
-docker compose exec app php artisan test --filter=OrganizationIsSuspendedTest
-docker compose exec app vendor/bin/pest --parallel
 ```
 
 Coverage objetivo: 80%+. Toda transición de estado (state machines) **debe** tener test feature.
@@ -1174,34 +1212,67 @@ Coverage objetivo: 80%+. Toda transición de estado (state machines) **debe** te
 
 ## Comandos útiles
 
+> **Recomendado:** Una vez que tengas configurado el alias de Sail (ver más arriba), usa `sail artisan ...` en lugar de los comandos largos de `docker compose exec`.
+
 ```bash
 # Migraciones
-docker compose exec app php artisan migrate
-docker compose exec app php artisan migrate:fresh --seed
+sail artisan migrate
+sail artisan migrate:fresh --seed
 
 # Seeders específicos
-docker compose exec app php artisan db:seed --class=JobCategorySeeder
+sail artisan db:seed --class=JobCategorySeeder
 
 # Sitemap manual
-docker compose exec app php artisan app:generate-sitemap
+sail artisan app:generate-sitemap
 
 # Alertas (dispatcher manual)
-docker compose exec app php artisan alerts:dispatch-daily
-docker compose exec app php artisan alerts:dispatch-weekly
+sail artisan alerts:dispatch-daily
+sail artisan alerts:dispatch-weekly
 
 # Scheduler en foreground (dev)
-docker compose exec app php artisan schedule:work
+sail artisan schedule:work
 
 # Queue worker (dev)
-docker compose exec app php artisan queue:listen
+sail artisan queue:listen
 
 # Tinker
-docker compose exec app php artisan tinker
+sail artisan tinker
 
-# Limpieza
-docker compose exec app php artisan optimize:clear
-docker compose exec app php artisan config:cache  # producción
+# Limpieza y cache
+sail artisan optimize:clear
+sail artisan config:cache     # producción
+sail artisan route:cache
+sail artisan view:cache
+
+# Equivalentes con docker compose (sin alias)
+# docker compose exec app php artisan migrate --seed
 ```
+
+### Configurar el alias de Sail (recomendado)
+
+Para evitar escribir comandos largos como `docker compose exec app php artisan`, añade esto a tu `~/.bashrc` o `~/.zshrc`:
+
+```bash
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+```
+
+Recarga tu terminal:
+
+```bash
+source ~/.zshrc   # o source ~/.bashrc
+```
+
+A partir de ahora usa:
+
+```bash
+sail up -d
+sail artisan migrate --seed
+sail artisan tinker
+sail npm run dev
+sail artisan test
+```
+
+Este alias es el método oficial y más usado en proyectos con Laravel Sail.
 
 ---
 
@@ -1235,6 +1306,8 @@ Pasos:
 2. Activar `OPCache` y `config:cache`/`route:cache`/`view:cache`.
 3. Levantar workers de queue con un supervisor (recomendado: `php artisan horizon` si se incorpora) o `queue:work` con systemd.
 4. Configurar cron en el host: `* * * * * php artisan schedule:run >> /dev/null 2>&1`.
+
+> Nota: En producción normalmente ejecutas estos comandos dentro del contenedor de la aplicación (no con el alias `sail`, que es solo para desarrollo).
 5. Verificar permisos: `storage/`, `bootstrap/cache/` writable por `www-data`.
 6. Backup diario de DB + carpeta `storage/app/public/` (contiene CV snapshots).
 
@@ -1246,6 +1319,21 @@ Health checks:
 
 ---
 
+## Contribuir
+
+- Levanta el entorno con Docker.
+- Ejecuta los tests (`sail artisan test` o `sail artisan pest --parallel`).
+- Sigue las convenciones (Actions por contexto, Policies, snapshots).
+- Para frontend usa `npm run dev` / `npm run build`.
+
+Contacta al equipo de CBC para contribuciones mayores. Actualmente no hay plantillas formales en `.github/`.
+
+---
+
 ## Licencia
 
 Propiedad de **Crossroads Bible Church (CBC)**. Todos los derechos reservados. Uso interno y privado; queda prohibida la redistribución, modificación o explotación comercial sin autorización escrita de CBC.
+
+---
+
+*README actualizado con evaluación completa del codebase, mejores prácticas de GitHub (hero + badges + features destacadas + quickstart + sección de capturas + hub de documentación + Contributing + estructura escaneable) y mejor organización (contenido profundo enlazado a `docs/`).*

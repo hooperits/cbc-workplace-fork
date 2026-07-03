@@ -13,7 +13,7 @@ final class SecurityHeaders
         $response = $next($request);
 
         $response->headers->add([
-            'Content-Security-Policy' => "default-src 'self'; img-src 'self' data: https://ui-avatars.com; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'",
+            'Content-Security-Policy' => "default-src 'self'; img-src 'self' data: https://ui-avatars.com https://*.ytimg.com https://*.youtube.com; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://www.youtube-nocookie.com; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'none'",
             'Strict-Transport-Security' => 'max-age=31536000',
             'X-Frame-Options' => 'DENY',
             'X-Content-Type-Options' => 'nosniff',

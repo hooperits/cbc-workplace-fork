@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class VenturePolicy extends BasePolicy
 {
-    public static $name = 'Venture';
+  public static $name = 'Venture';
 
     //    public function before(Model $user, string $ability): bool|null
     //    {
@@ -157,18 +157,18 @@ class VenturePolicy extends BasePolicy
     //        return true;
     //    }
 
-    public function reject(Model $user, Venture $venture): bool
-    {
-        if (! (($user instanceof User) && $user->hasPermission(static::prefix()))) {
-            return false;
-        }
-
-        if ($venture->approval_state !== VentureApprovalState::APPROVED) {
-            return false;
-        }
-
-        return true;
+  public function reject(Model $user, Venture $venture): bool
+  {
+    if (! (($user instanceof User) && $user->hasPermission(static::prefix()))) {
+      return false;
     }
+
+    if ($venture->approval_state !== VentureApprovalState::APPROVED) {
+      return false;
+    }
+
+    return true;
+  }
 
     //    public function extendValidity(Model $user, Venture $venture)
     //    {
@@ -186,4 +186,17 @@ class VenturePolicy extends BasePolicy
     //    {
     //        return ucfirst(static::$name) . ".{$name}";
     //    }
+
+  public function memberCanViewAny(Model $user): bool
+  {
+    return (bool) auth()->guard('member')->user();
+  }
+
+  public function memberCanCreate(Model $user): bool
+  {
+    if (! (bool) auth()->guard('member')->user()) {
+      return false;
+    }
+    return $user->isMemberEnabled();
+  }
 }

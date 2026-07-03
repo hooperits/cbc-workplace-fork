@@ -17,26 +17,35 @@ class RoleSeeder extends Seeder
 
     protected function createAdminRole()
     {
-        Role::create([
-            'name' => 'ADMIN',
-            'title' => 'ADMIN',
-            'is_active' => true,
-            'is_admin' => true,
-            'perm' => [],
-        ]);
-        Role::create([
-            'name' => 'DEACONO',
-            'title' => 'DEACONO',
-            'is_active' => true,
-            'is_admin' => false,
-            'perm' => [],
-        ]);
-        Role::create([
-            'name' => 'AFFILIADO',
-            'title' => 'AFFILIADO',
-            'is_active' => true,
-            'is_admin' => false,
-            'perm' => [],
-        ]);
+        // Use firstOrCreate to make the seeder idempotent (safe to run multiple times)
+        Role::firstOrCreate(
+            ['name' => 'ADMIN'],
+            [
+                'title'     => 'ADMIN',
+                'is_active' => true,
+                'is_admin'  => true,
+                'perm'      => [],
+            ]
+        );
+
+        Role::firstOrCreate(
+            ['name' => 'DEACONO'],
+            [
+                'title'     => 'DEACONO',
+                'is_active' => true,
+                'is_admin'  => false,
+                'perm'      => [],
+            ]
+        );
+
+        Role::firstOrCreate(
+            ['name' => 'AFFILIADO'],
+            [
+                'title'     => 'AFFILIADO',
+                'is_active' => true,
+                'is_admin'  => false,
+                'perm'      => [],
+            ]
+        );
     }
 }
