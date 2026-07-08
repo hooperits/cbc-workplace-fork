@@ -19,6 +19,7 @@
     :description="__('public.listing.subtitle')"
     :canonical="url('/bolsa-de-trabajo')"
     :noindex="$shouldNoindex"
+    active="bolsa"
 >
     <header class="mb-10">
         <h1 class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent sm:text-5xl">

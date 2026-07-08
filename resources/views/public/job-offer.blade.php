@@ -7,6 +7,7 @@
     :title="$offer->title"
     :description="\Illuminate\Support\Str::limit(strip_tags((string) $offer->description), 155)"
     :canonical="$detailUrl"
+    active="bolsa"
 >
     @push('head')
         @include('public.partials.json-ld', ['offer' => $offer])

@@ -42,8 +42,11 @@ Route::get('/member/contact', App\Filament\Member\Pages\Contact::class)
     ->name('member-contact');
 Route::get('/member/register-with-invitation-code', App\Filament\Member\Pages\InvitationCodeRequiredForRegistration::class)
     ->name('member-register-with-invitation-code');
-Route::get('/app', App\Filament\Venture\Resources\VentureResource\Pages\ListVentures::class)
-    ->name('venture-home');
+
+// /app is owned by the Filament Venture panel (VenturePanelProvider path +
+// ListVentures slug "/"). A standalone Livewire full-page route here would
+// bypass panel render hooks (public shell chrome). Callers that previously
+// used route('venture-home') should use url('/app') instead.
 
 // Spec 007 public job-board listing lives in routes/public.php (loaded by
 // RouteServiceProvider with a minimal, session-free middleware stack) so
