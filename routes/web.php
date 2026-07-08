@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\FaqModule;
 use App\Enums\VentureApprovalState;
+use App\Http\Controllers\Public\FaqController;
 use App\Models\Faq;
 use App\Models\JobListing;
 use App\Models\Venture;
@@ -26,14 +28,20 @@ Route::get('/', function () {
 
     $jobsCount = JobListing::active()->count();
 
-    $faqs = Faq::active()->ordered()->get();
+    $ventureFaqs = Faq::active()->forModule(FaqModule::VENTURE)->ordered()->limit(3)->get();
+    $jobBoardFaqs = Faq::active()->forModule(FaqModule::JOB_BOARD)->ordered()->limit(3)->get();
 
     return view('welcome', [
         'venturesCount' => $venturesCount,
         'jobsCount'     => $jobsCount,
-        'faqs'          => $faqs,
+        'ventureFaqs'   => $ventureFaqs,
+        'jobBoardFaqs'  => $jobBoardFaqs,
     ]);
 });
+
+Route::get('/preguntas-frecuentes', FaqController::class)
+    ->name('public.faqs');
+
 Route::get('/member/tos', App\Filament\Member\Pages\Tos::class)
     ->name('member-tos');
 Route::get('/member/welcome', App\Filament\Member\Pages\Welcome::class)

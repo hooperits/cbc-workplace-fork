@@ -14,11 +14,11 @@
 
 <nav
     aria-label="{{ __('Paginación de resultados') }}"
-    class="flex items-center justify-center gap-1 mt-8"
+    class="flex flex-wrap items-center justify-center gap-1 mt-8"
     role="navigation"
 >
     @if ($paginator->onFirstPage())
-        <span class="px-3 py-2 text-gray-400 cursor-default" aria-disabled="true">
+        <span class="px-3 py-2 text-slate-500 cursor-default" aria-disabled="true">
             ‹ {{ __('Anterior') }}
         </span>
     @else
@@ -26,7 +26,7 @@
             href="{{ $paginator->previousPageUrl() }}"
             rel="prev"
             aria-label="{{ __('Página anterior') }}"
-            class="px-3 py-2 text-blue-700 hover:text-blue-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded"
+            class="px-3 py-2 text-cyan-400 hover:text-cyan-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 rounded"
         >
             ‹ {{ __('Anterior') }}
         </a>
@@ -35,13 +35,13 @@
     @php $previous = null; @endphp
     @foreach ($window as $page)
         @if ($previous !== null && $page !== $previous + 1)
-            <span class="px-2 text-gray-400" aria-hidden="true">…</span>
+            <span class="px-2 text-slate-500" aria-hidden="true">…</span>
         @endif
 
         @if ($page === $currentPage)
             <span
                 aria-current="page"
-                class="px-3 py-2 bg-blue-700 text-white rounded font-semibold"
+                class="px-3 py-2 bg-cyan-600 text-white rounded-lg font-semibold shadow-sm"
             >
                 {{ $page }}
             </span>
@@ -49,7 +49,7 @@
             <a
                 href="{{ $paginator->url($page) }}"
                 aria-label="{{ __('Página :n', ['n' => $page]) }}"
-                class="px-3 py-2 text-blue-700 hover:text-blue-900 hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded"
+                class="px-3 py-2 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 rounded-lg"
             >
                 {{ $page }}
             </a>
@@ -63,12 +63,12 @@
             href="{{ $paginator->nextPageUrl() }}"
             rel="next"
             aria-label="{{ __('Página siguiente') }}"
-            class="px-3 py-2 text-blue-700 hover:text-blue-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded"
+            class="px-3 py-2 text-cyan-400 hover:text-cyan-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 rounded"
         >
             {{ __('Siguiente') }} ›
         </a>
     @else
-        <span class="px-3 py-2 text-gray-400 cursor-default" aria-disabled="true">
+        <span class="px-3 py-2 text-slate-500 cursor-default" aria-disabled="true">
             {{ __('Siguiente') }} ›
         </span>
     @endif

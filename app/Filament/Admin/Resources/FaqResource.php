@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\FaqModule;
 use App\Filament\Admin\Resources\FaqResource\Pages;
 use App\Models\Faq;
 use Filament\Forms;
@@ -24,30 +25,36 @@ class FaqResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Pregunta Frecuente');
+        return __('models/faq.label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Preguntas Frecuentes');
+        return __('models/faq.plural-label');
     }
 
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make(__('Contenido'))
+                Infolists\Components\Section::make(__('models/faq.sections.content'))
                     ->schema([
+                        Infolists\Components\TextEntry::make('module')
+                            ->label(__('models/faq.fields.module'))
+                            ->badge(),
                         Infolists\Components\TextEntry::make('question')
-                            ->label(__('Pregunta'))
+                            ->label(__('models/faq.fields.question'))
                             ->columnSpanFull(),
                         Infolists\Components\TextEntry::make('answer')
-                            ->label(__('Respuesta'))
+                            ->label(__('models/faq.fields.answer'))
                             ->html()
                             ->columnSpanFull(),
                         Infolists\Components\TextEntry::make('youtube_id')
-                            ->label(__('ID Video YouTube'))
+                            ->label(__('models/faq.fields.youtube_id'))
                             ->visible(fn (Faq $record) => $record->hasVideo()),
+                        Infolists\Components\IconEntry::make('is_active')
+                            ->label(__('models/faq.fields.is_active'))
+                            ->boolean(),
                     ]),
             ]);
     }
@@ -58,26 +65,34 @@ class FaqResource extends Resource
             ->schema([
                 Forms\Components\Section::make()
                     ->schema([
+                        Forms\Components\Select::make('module')
+                            ->label(__('models/faq.fields.module'))
+                            ->options(collect(FaqModule::cases())->mapWithKeys(
+                                fn (FaqModule $m) => [$m->value => $m->getLabel()]
+                            )->all())
+                            ->required()
+                            ->native(false)
+                            ->default(FaqModule::GENERAL->value),
                         Forms\Components\TextInput::make('question')
-                            ->label(__('Pregunta'))
+                            ->label(__('models/faq.fields.question'))
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
                         Forms\Components\RichEditor::make('answer')
-                            ->label(__('Respuesta'))
+                            ->label(__('models/faq.fields.answer'))
                             ->required()
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('youtube_id')
-                            ->label(__('ID del Video de YouTube'))
-                            ->helperText('Ejemplo: uZUWu3OtuTs (solo el ID, no la URL completa)')
+                            ->label(__('models/faq.fields.youtube_id'))
+                            ->helperText(__('models/faq.fields.youtube_id_helper'))
                             ->maxLength(50),
                         Forms\Components\TextInput::make('sort_order')
-                            ->label(__('Orden'))
+                            ->label(__('models/faq.fields.sort_order'))
                             ->numeric()
                             ->default(0)
                             ->required(),
                         Forms\Components\Toggle::make('is_active')
-                            ->label(__('Activo'))
+                            ->label(__('models/faq.fields.is_active'))
                             ->default(true),
                     ]),
             ]);
@@ -89,19 +104,23 @@ class FaqResource extends Resource
             ->reorderable('sort_order')
             ->defaultSort('sort_order')
             ->columns([
+                Tables\Columns\TextColumn::make('module')
+                    ->label(__('models/faq.fields.module'))
+                    ->badge()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('question')
-                    ->label(__('Pregunta'))
+                    ->label(__('models/faq.fields.question'))
                     ->limit(70)
                     ->searchable(),
                 Tables\Columns\IconColumn::make('youtube_id')
-                    ->label(__('Video'))
+                    ->label(__('models/faq.fields.video'))
                     ->boolean()
                     ->getStateUsing(fn (Faq $record) => $record->hasVideo()),
                 Tables\Columns\TextColumn::make('sort_order')
-                    ->label(__('Orden'))
+                    ->label(__('models/faq.fields.sort_order'))
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label(__('Activo'))
+                    ->label(__('models/faq.fields.is_active'))
                     ->boolean()
                     ->action(function (Faq $record): void {
                         $record->is_active = ! $record->is_active;
@@ -109,7 +128,16 @@ class FaqResource extends Resource
                     }),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('module')
+                    ->label(__('models/faq.fields.module'))
+                    ->options(collect(FaqModule::cases())->mapWithKeys(
+                        fn (FaqModule $m) => [$m->value => $m->getLabel()]
+                    )->all()),
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label(__('models/faq.fields.is_active')),
+                Tables\Filters\Filter::make('has_video')
+                    ->label(__('models/faq.fields.video'))
+                    ->query(fn ($query) => $query->whereNotNull('youtube_id')->where('youtube_id', '!=', '')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -126,9 +154,7 @@ class FaqResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

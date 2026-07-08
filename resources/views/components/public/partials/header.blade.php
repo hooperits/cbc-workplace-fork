@@ -29,6 +29,13 @@
                 >
                     {{ __('Emprendimientos') }}
                 </a>
+                <a
+                    href="{{ url('/preguntas-frecuentes') }}"
+                    class="{{ $linkBase }} {{ $active === 'faq' ? $linkActive : $linkIdle }} text-slate-300 hover:text-cyan-400 font-medium transition-colors relative after:absolute after:-bottom-1 after:left-0 after:h-px after:bg-cyan-400 after:transition-all {{ $active === 'faq' ? 'text-cyan-400 after:w-full' : 'after:w-0 hover:after:w-full' }}"
+                    @if ($active === 'faq') aria-current="page" @endif
+                >
+                    {{ __('public-faq.nav') }}
+                </a>
                 @auth('member')
                     <a
                         href="{{ url()->route('filament.member.resources.favorites.index') }}"

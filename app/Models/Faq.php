@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FaqModule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ class Faq extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'module' => FaqModule::class,
     ];
 
     public function scopeActive(Builder $query): Builder
@@ -23,11 +25,18 @@ class Faq extends Model
 
     public function scopeOrdered(Builder $query): Builder
     {
-        return $query->orderBy('sort_order');
+        return $query->orderBy('module')->orderBy('sort_order');
+    }
+
+    public function scopeForModule(Builder $query, FaqModule|string $module): Builder
+    {
+        $value = $module instanceof FaqModule ? $module->value : $module;
+
+        return $query->where('module', $value);
     }
 
     public function hasVideo(): bool
     {
-        return !empty($this->youtube_id);
+        return ! empty($this->youtube_id);
     }
 }
