@@ -123,7 +123,6 @@ class ApplicationResource extends Resource
                             ->url(fn (Application $record) => $record->cv_snapshot_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($record->cv_snapshot_path) : null)
                             ->openUrlInNewTab()
                             ->color('primary')
-                            ->underline()
                             ->icon('heroicon-o-document-arrow-down'),
                         Infolists\Components\TextEntry::make('last_status_changed_at')
                             ->label(__('models/application.fields.last_status_changed_at'))

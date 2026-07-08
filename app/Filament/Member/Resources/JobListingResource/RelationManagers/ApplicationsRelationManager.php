@@ -78,7 +78,6 @@ class ApplicationsRelationManager extends RelationManager
                             ->url(fn (Application $record) => $record->cv_snapshot_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($record->cv_snapshot_path) : null)
                             ->openUrlInNewTab()
                             ->color('primary')
-                            ->underline()
                             ->icon('heroicon-o-document-arrow-down'),
                         \Filament\Infolists\Components\TextEntry::make('status')
                             ->label(__('models/application.fields.status'))
