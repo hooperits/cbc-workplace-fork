@@ -16,6 +16,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class JobListingResource extends BaseJobListingResource
 {
+    public static function getNavigationLabel(): string
+    {
+        return __('models/job-listing.navigation.member_label');
+    }
+
     public static function table(Table $table): Table
     {
         return parent::table($table)

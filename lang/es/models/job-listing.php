@@ -33,7 +33,8 @@ return [
     ],
 
     'navigation' => [
-        'label' => 'Ofertas de Empleo Publicadas',
+        'label' => 'Ofertas de Empleo',
+        'member_label' => 'Mis Ofertas',
         'group' => 'Bolsa de Trabajo',
     ],
 
