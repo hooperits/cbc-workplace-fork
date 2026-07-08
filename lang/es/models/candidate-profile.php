@@ -19,7 +19,7 @@ return [
     ],
 
     'navigation' => [
-        'label' => 'Mi Perfil Profesional',
+        'label' => 'Mi Hoja de Vida',
         'group' => 'Bolsa de Trabajo',
     ],
 
