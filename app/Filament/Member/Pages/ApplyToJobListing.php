@@ -36,6 +36,17 @@ class ApplyToJobListing extends Page implements HasForms
             ->orWhere('id', $offer)
             ->firstOrFail();
 
+        $member = $this->getMember();
+        if ($member && ! $member->candidateProfile()->exists()) {
+            session([
+                'candidate_profile_intended' => url()->current(),
+            ]);
+            Util::filamentNotification(__('pages/job-board-home.gates.apply_need_profile'), 'warning');
+            $this->redirect(\App\Filament\Member\Resources\CandidateProfileResource::getUrl('create'));
+
+            return;
+        }
+
         $this->data = [
             'cover_letter' => null,
             'screening_answers' => $this->initialScreeningAnswers(),
@@ -120,12 +131,9 @@ class ApplyToJobListing extends Page implements HasForms
 
     public static function canAccess(): bool
     {
-        $user = auth('member')->user();
-        if (! $user instanceof Member) {
-            return false;
-        }
-
-        return $user->candidateProfile()->exists();
+        // Allow access so mount() can guide members without a profile to
+        // create their hoja de vida (instead of a hard 403).
+        return auth('member')->user() instanceof Member;
     }
 
     protected function getMember(): ?Member

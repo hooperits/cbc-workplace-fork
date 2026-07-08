@@ -22,7 +22,9 @@ class BrowseJobs extends Page implements HasTable
 
   protected static string $view = 'filament.member.pages.browse-jobs';
 
-  protected static bool $shouldRegisterNavigation = false;
+  protected static ?int $navigationSort = 14;
+
+  protected static bool $shouldRegisterNavigation = true;
 
   public static function getNavigationLabel(): string
   {
@@ -31,8 +33,7 @@ class BrowseJobs extends Page implements HasTable
 
   public static function getNavigationGroup(): ?string
   {
-    return 'Menu';
-    return __('Bolsa de Trabajo');
+    return __('navigation.busco-empleo');
   }
 
   public function getTitle(): string

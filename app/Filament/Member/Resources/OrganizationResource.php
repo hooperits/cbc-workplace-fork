@@ -18,11 +18,13 @@ class OrganizationResource extends Resource
 
   protected static ?string $navigationIcon = 'heroicon-o-building-office';
 
+  protected static ?int $navigationSort = 21;
+
   protected static bool $shouldSkipAuthorization = true;
 
   public static function getNavigationGroup(): ?string
   {
-    return __('models/organization.navigation.group');
+    return __('navigation.quiero-contratar');
   }
 
   public static function getNavigationLabel(): string

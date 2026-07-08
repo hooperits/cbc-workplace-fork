@@ -16,9 +16,16 @@ use Illuminate\Database\Eloquent\Builder;
 
 class JobListingResource extends BaseJobListingResource
 {
+    protected static ?int $navigationSort = 22;
+
     public static function getNavigationLabel(): string
     {
         return __('models/job-listing.navigation.member_label');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation.quiero-contratar');
     }
 
     public static function table(Table $table): Table

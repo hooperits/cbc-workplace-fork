@@ -95,9 +95,9 @@ class MemberPanelProvider extends PanelProvider
         ->discoverResources(in: app_path('Filament/Member/Resources'), for: 'App\\Filament\\Member\\Resources')
         ->discoverPages(in: app_path('Filament/Member/Pages'), for: 'App\\Filament\\Member\\Pages')
         ->pages([
-          // Pages\Dashboard::class,
-          // VentureResource\Pages\ListVentures::class,
+          // Dashboard is discovered under Pages/; JobBoardHome is the Bolsa hub.
         ])
+        ->homeUrl(fn (): string => \App\Filament\Member\Pages\JobBoardHome::getUrl(panel: 'member'))
         ->discoverWidgets(in: app_path('Filament/Member/Widgets'), for: 'App\\Filament\\Member\\Widgets')
         ->widgets([
           //        Widgets\AccountWidget::class,
@@ -160,7 +160,9 @@ class MemberPanelProvider extends PanelProvider
           '
         )
         ->navigationGroups([
-          'Bolsa de Trabajo',
+          __('navigation.bolsa-de-trabajo'),
+          __('navigation.busco-empleo'),
+          __('navigation.quiero-contratar'),
         ]);
     // ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
         //   $items = [

@@ -25,6 +25,8 @@ class JobAlertResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-bell-alert';
 
+    protected static ?int $navigationSort = 13;
+
     protected static bool $shouldSkipAuthorization = true;
 
     public static function getNavigationLabel(): string
@@ -34,7 +36,7 @@ class JobAlertResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('models/job-alert.navigation.group');
+        return __('navigation.busco-empleo');
     }
 
     public static function getModelLabel(): string

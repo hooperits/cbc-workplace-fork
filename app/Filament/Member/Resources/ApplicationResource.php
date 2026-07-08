@@ -18,6 +18,8 @@ class ApplicationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
 
+    protected static ?int $navigationSort = 12;
+
     protected static bool $shouldSkipAuthorization = true;
 
     public static function getNavigationLabel(): string
@@ -27,7 +29,7 @@ class ApplicationResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('models/application.navigation.group');
+        return __('navigation.busco-empleo');
     }
 
     public static function getModelLabel(): string
@@ -76,8 +78,15 @@ class ApplicationResource extends Resource
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([])
-            ->emptyStateHeading(__('models/application.plural-label'))
-            ->emptyStateDescription('—');
+            ->emptyStateHeading(__('pages/job-board-home.empty.applications.heading'))
+            ->emptyStateDescription(__('pages/job-board-home.empty.applications.description'))
+            ->emptyStateActions([
+                Tables\Actions\Action::make('browse_jobs')
+                    ->label(__('pages/job-board-home.empty.applications.action'))
+                    ->url(url('/bolsa-de-trabajo'))
+                    ->icon('heroicon-o-magnifying-glass')
+                    ->button(),
+            ]);
     }
 
     public static function infolist(Infolist $infolist): Infolist

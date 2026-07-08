@@ -62,7 +62,7 @@ class Login extends AuthLogin
                     return;
                 }
             }
-            redirect(url(route('filament.member.pages.dashboard')));
+            redirect(url(\App\Filament\Member\Pages\JobBoardHome::getUrl(panel: 'member')));
         }
 
         $this->form->fill();

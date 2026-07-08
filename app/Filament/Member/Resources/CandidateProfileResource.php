@@ -19,6 +19,8 @@ class CandidateProfileResource extends Resource
 
   protected static ?string $navigationIcon = 'heroicon-o-user-circle';
 
+  protected static ?int $navigationSort = 11;
+
   protected static bool $shouldSkipAuthorization = true;
 
   public static function getNavigationLabel(): string
@@ -28,7 +30,7 @@ class CandidateProfileResource extends Resource
 
   public static function getNavigationGroup(): ?string
   {
-    return __('models/candidate-profile.navigation.group');
+    return __('navigation.busco-empleo');
   }
 
   public static function getModelLabel(): string

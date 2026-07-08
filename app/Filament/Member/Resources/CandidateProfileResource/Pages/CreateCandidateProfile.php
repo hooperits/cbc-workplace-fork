@@ -42,6 +42,11 @@ class CreateCandidateProfile extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
+        $intended = session()->pull('candidate_profile_intended');
+        if (is_string($intended) && (str_starts_with($intended, url('/')) || str_starts_with($intended, '/'))) {
+            return $intended;
+        }
+
         return CandidateProfileResource::getUrl('edit', ['record' => $this->record]);
     }
 
