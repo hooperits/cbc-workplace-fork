@@ -11,6 +11,11 @@ class CreateOrganization extends CreateRecord
 {
     protected static string $resource = OrganizationResource::class;
 
+    public static function canCreateAnother(): bool
+    {
+        return false;
+    }
+
     public function mount(): void
     {
         $existing = Organization::where('member_id', auth('member')->id())->first();

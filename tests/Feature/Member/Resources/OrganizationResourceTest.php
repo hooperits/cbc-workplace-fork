@@ -92,6 +92,11 @@ class OrganizationResourceTest extends TestCase
             ->assertRedirect();
     }
 
+    public function test_create_another_is_disabled_for_one_to_one_organization(): void
+    {
+        $this->assertFalse(OrganizationResource\Pages\CreateOrganization::canCreateAnother());
+    }
+
     public function test_organization_starts_with_pending_state(): void
     {
         Livewire::test(OrganizationResource\Pages\CreateOrganization::class)

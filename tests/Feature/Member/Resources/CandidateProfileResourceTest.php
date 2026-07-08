@@ -48,6 +48,11 @@ class CandidateProfileResourceTest extends TestCase
             ->assertSuccessful();
     }
 
+    public function test_create_another_is_disabled_for_one_to_one_profile(): void
+    {
+        $this->assertFalse(CandidateProfileResource\Pages\CreateCandidateProfile::canCreateAnother());
+    }
+
     public function test_member_can_create_profile_with_required_fields(): void
     {
         Livewire::test(CandidateProfileResource\Pages\CreateCandidateProfile::class)

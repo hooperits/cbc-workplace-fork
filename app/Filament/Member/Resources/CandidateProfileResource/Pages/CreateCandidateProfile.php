@@ -11,6 +11,11 @@ class CreateCandidateProfile extends CreateRecord
 {
     protected static string $resource = CandidateProfileResource::class;
 
+    public static function canCreateAnother(): bool
+    {
+        return false;
+    }
+
     public function mount(): void
     {
         $existing = CandidateProfile::where('member_id', auth('member')->id())->first();
