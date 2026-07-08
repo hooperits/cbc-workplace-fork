@@ -582,6 +582,8 @@ Esto es la única forma documentada de borrado de cuenta y deja al sistema en un
 - `scope = 'Venture'` — categorías de emprendimientos. Gestionadas en [app/Filament/Admin/Resources/CategoryResource.php](app/Filament/Admin/Resources/CategoryResource.php).
 - `scope = 'JobListing'` — categorías de ofertas. Gestionadas en [app/Filament/Admin/Resources/JobCategoryResource.php](app/Filament/Admin/Resources/JobCategoryResource.php) (filtra `scope='JobListing'` en línea 43).
 
+Los nombres amigables que aparecen en el selector "Para" del recurso genérico de categorías (y en la columna de la tabla) provienen de la configuración en **Sistema → Configuración** bajo la clave `categories`. Esto se introdujo para permitir que el módulo de Bolsa de Trabajo (integrado posteriormente) tuviera su propia entrada sin hardcodear. Ver `config/app_config.php` y `CategoryResource::getCategoryScopes()`.
+
 Constraint `unique(scope, slug)` en [database/migrations/2026_03_23_000001_add_slug_icon_to_categories_table.php#L18](database/migrations/2026_03_23_000001_add_slug_icon_to_categories_table.php#L18) permite mismo slug en distinto scope (e.g. `tecnologia` puede existir en ambos).
 
 La relación se materializa vía la **tabla pivote polimórfica `categorizables`** ([database/migrations/2024_08_20_210441_create_categorizables_table.php](database/migrations/2024_08_20_210441_create_categorizables_table.php)) que conecta `Venture` ([app/Models/Venture.php#L75-L78](app/Models/Venture.php#L75-L78), `morphToMany`) y `JobListing` con la misma estructura.

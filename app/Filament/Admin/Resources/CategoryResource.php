@@ -38,7 +38,7 @@ class CategoryResource extends Resource
           Forms\Components\Select::make('scope')
               ->required()
               ->label(__('Para'))
-              ->options(Config::make()->getp('categories')),
+              ->options(static::getCategoryScopes()),
           Forms\Components\TextInput::make('name')
               ->required()
               ->maxLength(50)
@@ -49,6 +49,19 @@ class CategoryResource extends Resource
               ->default(0)
               ->label(__('Orden')),
         ]);
+  }
+
+  /**
+   * Returns the configurable category scopes (scope_value => Label) from Sistema > Configuración.
+   * Falls back to the two known scopes so the UI never breaks even if the key is absent
+   * in the DB config (supports the post-job-board integration described in the change).
+   */
+  public static function getCategoryScopes(): array
+  {
+      return Config::make()->getp('categories') ?: [
+          'Venture'    => 'Emprendimiento',
+          'JobListing' => 'Bolsa de Trabajo',
+      ];
   }
 
   public static function table(Table $table): Table
@@ -70,7 +83,8 @@ class CategoryResource extends Resource
               ->label(__('Nombre')),
           Tables\Columns\TextColumn::make('scope')
               ->searchable()
-              ->label(__('Para')),
+              ->label(__('Para'))
+              ->formatStateUsing(fn ($state) => static::getCategoryScopes()[$state] ?? $state),
           Tables\Columns\TextColumn::make('order')
               ->searchable()
               ->label(__('Orden')),

@@ -28,6 +28,17 @@ class ConfigSeeder extends Seeder
             ]
         );
 
+        // Ensure 'categories' scope map so CategoryResource "Para" select (and the generic admin
+        // category UI) can offer entries for both Emprendimientos and the later-added Bolsa de Trabajo.
+        // Uses actual scope column values. Labels match the documented Sistema > Configuración intent.
+        $configData['categories'] = array_merge(
+            $configData['categories'] ?? [],
+            [
+                'Venture'    => 'Emprendimiento',
+                'JobListing' => 'Bolsa de Trabajo',
+            ]
+        );
+
         Config::updateOrCreate(
             ['name' => 'default'],
             ['jsondata' => $configData]
