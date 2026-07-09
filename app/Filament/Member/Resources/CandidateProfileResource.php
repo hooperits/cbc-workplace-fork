@@ -33,6 +33,29 @@ class CandidateProfileResource extends Resource
     return __('navigation.busco-empleo');
   }
 
+  public static function getNavigationBadge(): ?string
+  {
+    $member = auth('member')->user();
+    if (! $member) {
+      return null;
+    }
+    $profile = $member->candidateProfile;
+    if (! $profile) {
+      return '!';
+    }
+    $complete = filled($profile->headline)
+        && filled($profile->city)
+        && filled($profile->phone)
+        && filled($profile->summary);
+
+    return $complete ? null : '!';
+  }
+
+  public static function getNavigationBadgeColor(): ?string
+  {
+    return 'warning';
+  }
+
   public static function getModelLabel(): string
   {
     return __('models/candidate-profile.label');

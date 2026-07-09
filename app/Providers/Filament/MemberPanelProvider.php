@@ -127,9 +127,7 @@ class MemberPanelProvider extends PanelProvider
         ])
         ->renderHook(
           PanelsRenderHook::GLOBAL_SEARCH_AFTER,
-          function (): string {
-            return (auth()->guard('member')->user()->membership_state === MembershipState::APPROVED) ? 'AFILIADO' : 'REGISTRADO';
-          }
+          fn (): string => view('filament.member.membership-pill')->render()
         )
         ->renderHook(
           PanelsRenderHook::BODY_START,
@@ -137,27 +135,7 @@ class MemberPanelProvider extends PanelProvider
         )
         ->renderHook(
           PanelsRenderHook::HEAD_START,
-          fn (): string => '
-          <style>
-            :root { color-scheme: dark; }
-            body, .fi-main-ctn { font-family: Inter, system-ui, -apple-system, sans-serif; background: #020617 !important; }
-            h1, h2, h3, .brand-logo { font-family: Outfit, system-ui, sans-serif; }
-            :focus-visible { outline: 3px solid #06b6d4; outline-offset: 2px; }
-            ::-webkit-scrollbar { width: 8px; }
-            ::-webkit-scrollbar-track { background: #0f172a; }
-            ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
-            ::-webkit-scrollbar-thumb:hover { background: #475569; }
-            .fi-ta-content-grid .fi-ta-record,
-            .fi-section,
-            .fi-card,
-            .fi-infolist-section {
-                background-color: rgba(15, 23, 42, 0.4) !important;
-                border: 1px solid rgba(30, 41, 59, 0.8) !important;
-                border-radius: 1rem !important;
-            }
-            .fi-main-ctn { background: #020617 !important; }
-          </style>
-          '
+          fn (): string => view('filament.member.shell-styles')->render()
         )
         ->navigationGroups([
           __('navigation.bolsa-de-trabajo'),
