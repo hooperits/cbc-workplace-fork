@@ -22,7 +22,7 @@
     active="bolsa"
 >
     <header class="mb-10">
-        <h1 class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent sm:text-5xl">
+        <h1 class="text-4xl font-extrabold tracking-tight leading-normal sm:leading-relaxed py-1 bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent sm:text-5xl overflow-visible">
             {{ __('public.listing.title') }}
         </h1>
         <p class="text-slate-400 mt-2 text-lg max-w-2xl font-light">

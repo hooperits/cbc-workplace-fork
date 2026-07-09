@@ -18,7 +18,16 @@
 
     h1, h2, h3, .brand-logo {
         font-family: 'Outfit', system-ui, sans-serif;
-        line-height: 1.15;
+        line-height: 1.35; /* room for bg-clip-text gradient titles */
+    }
+
+    /* Gradient titles clip glyphs if the box is tighter than the paint */
+    h1.bg-clip-text,
+    h1[class*="bg-clip-text"] {
+        padding-top: 0.15em;
+        padding-bottom: 0.2em;
+        line-height: 1.4 !important;
+        overflow: visible;
     }
 
     :focus-visible {
