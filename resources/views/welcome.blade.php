@@ -82,49 +82,63 @@
         </div>
     </section>
 
-    {{-- Preguntas Frecuentes (preview por módulo) --}}
+    {{-- Preguntas Frecuentes (preview limpio por módulo) --}}
     <section class="py-20 border-t border-slate-800/60">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-semibold text-white tracking-tight">{{ __('public-faq.home.title') }}</h2>
-                <p class="mt-4 text-slate-400 text-[15px]">{{ __('public-faq.home.subtitle') }}</p>
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12 max-w-2xl mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+                    {{ __('public-faq.home.title') }}
+                </h2>
+                <p class="mt-3 text-slate-400 text-[15px] font-light">
+                    {{ __('public-faq.home.subtitle') }}
+                </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-300 mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                        {{ __('public-faq.home.venture_heading') }}
-                    </h3>
-                    <div class="space-y-3">
+            <div id="home-faq-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+                <div class="min-w-0 rounded-xl border border-slate-800/80 bg-slate-950/30 overflow-hidden">
+                    <div class="px-5 pt-5 pb-2 flex items-center gap-2 border-b border-slate-800/60">
+                        <span class="h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0" aria-hidden="true"></span>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                            {{ __('public-faq.home.venture_heading') }}
+                        </h3>
+                    </div>
+                    <div class="px-4 sm:px-5">
                         @forelse($ventureFaqs as $faq)
-                            @include('public.partials.faq-item', ['faq' => $faq])
+                            @include('public.partials.faq-item', ['faq' => $faq, 'showModule' => false])
                         @empty
-                            <p class="text-sm text-slate-500 py-4">—</p>
+                            <p class="text-sm text-slate-600 py-6 text-center">—</p>
                         @endforelse
                     </div>
                 </div>
-                <div>
-                    <h3 class="text-sm font-semibold uppercase tracking-wider text-cyan-300 mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                        {{ __('public-faq.home.job_board_heading') }}
-                    </h3>
-                    <div class="space-y-3">
+
+                <div class="min-w-0 rounded-xl border border-slate-800/80 bg-slate-950/30 overflow-hidden">
+                    <div class="px-5 pt-5 pb-2 flex items-center gap-2 border-b border-slate-800/60">
+                        <span class="h-1.5 w-1.5 rounded-full bg-cyan-400 shrink-0" aria-hidden="true"></span>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                            {{ __('public-faq.home.job_board_heading') }}
+                        </h3>
+                    </div>
+                    <div class="px-4 sm:px-5">
                         @forelse($jobBoardFaqs as $faq)
-                            @include('public.partials.faq-item', ['faq' => $faq])
+                            @include('public.partials.faq-item', ['faq' => $faq, 'showModule' => false])
                         @empty
-                            <p class="text-sm text-slate-500 py-4">—</p>
+                            <p class="text-sm text-slate-600 py-6 text-center">—</p>
                         @endforelse
                     </div>
                 </div>
             </div>
 
-            <div class="mt-12 text-center">
+            <div
+                id="home-faq-cta"
+                class="text-center relative z-20"
+                style="padding-top: 2.5rem; margin-top: 2rem;"
+            >
                 <a
                     href="{{ url('/preguntas-frecuentes') }}"
-                    class="inline-flex items-center justify-center px-6 py-3.5 border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 font-bold rounded-xl hover:bg-cyan-500/20 transition-all duration-300 text-sm"
+                    class="inline-flex items-center gap-2 text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
                 >
-                    {{ __('public-faq.home.view_all') }} <span class="ml-2">→</span>
+                    {{ __('public-faq.home.view_all') }}
+                    <span aria-hidden="true">→</span>
                 </a>
             </div>
         </div>
