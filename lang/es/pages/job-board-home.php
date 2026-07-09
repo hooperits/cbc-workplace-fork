@@ -4,6 +4,19 @@ return [
     'navigation' => 'Inicio',
     'title' => 'Bolsa de Trabajo',
     'subtitle' => '¿Qué quieres hacer hoy? Puedes buscar empleo, contratar talento, o ambas cosas.',
+    'greeting' => 'Hola, :name',
+    'greeting_fallback' => 'Hola',
+    'progress_label' => ':done de :total pasos',
+    'next_step' => 'Siguiente paso',
+    'quick' => [
+        'heading' => 'Accesos rápidos',
+        'profile' => 'Mi hoja de vida',
+        'applications' => 'Postulaciones',
+        'alerts' => 'Alertas',
+        'org' => 'Mi organización',
+        'listings' => 'Mis ofertas',
+        'browse' => 'Explorar vacantes',
+    ],
 
     'status' => [
         'ready_to_apply' => 'Listo para postular a vacantes.',
@@ -29,6 +42,7 @@ return [
         'cta' => [
             'create_profile' => 'Crear hoja de vida',
             'edit_profile' => 'Editar hoja de vida',
+            'complete_profile' => 'Completar hoja de vida',
             'browse' => 'Ver ofertas de empleo',
             'applications' => 'Mis postulaciones',
         ],

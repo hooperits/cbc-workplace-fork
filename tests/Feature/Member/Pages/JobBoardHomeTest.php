@@ -52,7 +52,9 @@ class JobBoardHomeTest extends TestCase
             ->assertSee(__('pages/job-board-home.candidate.title'))
             ->assertSee(__('pages/job-board-home.employer.title'))
             ->assertSee(__('pages/job-board-home.candidate.cta.create_profile'))
-            ->assertSee(__('pages/job-board-home.employer.cta.create_org'));
+            ->assertSee(__('pages/job-board-home.employer.cta.create_org'))
+            ->assertSee(__('pages/job-board-home.quick.heading'))
+            ->assertSee(__('pages/job-board-home.progress_label', ['done' => 0, 'total' => 2]), false);
     }
 
     public function test_create_job_listing_without_org_redirects_to_org_create(): void
